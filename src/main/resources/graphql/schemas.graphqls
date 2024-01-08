@@ -1,0 +1,376 @@
+scalar Date
+scalar LocalDateTime
+
+type Query{
+    iconList:[Icon],
+
+    #    User
+    account(limit: Int, pacing: Int):[User],
+    find_account_by_id(userid: String):User,
+    get_top_reputation_user:[User],
+    get_list_low_reputation:[User],
+    get_list_ban_user:[User],
+    get_user_by_keyword(keyword:String):[User],
+
+    #    Post
+    post(limit: Int, pacing: Int):[Post],
+    find_post_by_id(postid: Int):Post,
+    find_post_by_userid(userid: String):[Post],
+    find_post_by_topicid(topicid:[Int]):[Post],
+    find_post_by_keyword(keyword:String):[Post],
+    find_post_in_group(groupid: Int):[Post],
+
+    #    Comment
+    comment(limit: Int, pacing: Int):[Comment],
+    check_comment_in_comment(commentid:Int):Int,
+    find_all_comment_by_postid(postid: Int):[Comment],
+    find_all_comment_by_commentparentid(commentparentid: Int,postid:Int):[Comment],
+
+    #    Topic
+    topic:[Topic],
+
+    #    Notice
+    find_all_notice_by_userid(userid: String):[Notice],
+    find_notice_by_userid_type_subject(userid:String,typee:Int,subject:Int):Notice,
+
+    #    Bookmark
+    find_all_bookmark_by_userid(userid: String):[Bookmark],
+
+    #    Comment_Like
+    list_commentlike_by_commentid(commentid:Int):[Comment_Like],
+    list_commentdislike_by_commentid(commentid:Int):[Comment_Like],
+    find_all_likecomment_by_commentid(commentid: Int):Int,
+    find_all_dislikecomment_by_commentid(commentid: Int):Int,
+    find_commentlike_by_commentid_and_userid(commentid:Int,userid: String):Comment_Like,
+    find_commentlike_byuserid(userid: String):[Comment_Like],
+
+    #Post_Like
+    find_all_likepost_by_postid(postid: Int):Int,
+    find_all_dislikepost_by_postid(postid: Int):Int,
+    find_postlike_by_postid_and_userid(postid:Int,userid: String):Post_Like,
+    find_postlike_byuserid(userid: String):[Post_Like],
+
+    #   Follow
+    get_all_follower_by_user(userid:String):[User],
+    get_all_user_by_follower(followerid:String):[User],
+
+    #    Report
+    get_report_by_type(type:Int):[Report],
+
+    #   Group
+    find_group_by_keyword(keyword:String):[Group],
+    get_group_by_admin(admin:String):[Group],
+    get_group_by_userid(userid:String):[Group],
+    get_group_by_groupid(groupid:Int):Group,
+
+    #   User_Group
+    get_user_in_group(groupid:Int,limit: Int, pacing: Int):[User_Group],
+
+    #   Statistic
+    statistic_user(year: Int):[Int],
+    statistic_post(year: Int):[Int],
+    statistic_post_in_topic:[Int],
+}
+type Mutation {
+    createIcon (iconname: String, iconimage:String): Icon,
+    #    User
+    account_update (user: UserRequest): User,
+    ban_user(userid:String,isbanid:Int):User,
+    logout(userid:String):String,
+    update_reputation(userid:String,reputation:Int):String,
+
+
+    #    Post
+    update_post_by_pk (post:PostRequest,topic:TopicRequest):String,
+    delete_post_by_pk (postid:Int):String,
+    create_post(post:PostRequest,user:UserRequest,topic:TopicRequest):String,
+    hide_post(postid: Int):String,
+    update_totalread_post(postid: Int,userid: String):String,
+    create_post_in_group(post:PostRequest,user:UserRequest,topic:TopicRequest,groupid:Int):String,
+
+    #    Comment
+    update_comment_by_pk(comment: CommentRequest):String,
+    create_comment(comment: CommentRequest, userid:String,postid: Int):String,
+    delete_comment_by_pk(commentid: Int):String,
+    create_comment_in_comment(comment: CommentRequest, userid:String, comment_parentid:Int):String,
+
+    #    PostLike
+    create_icon_for_postlike(userid: String,postid: Int, iconid: Int):String,
+    delete_icon_for_postlike(userid: String,postid: Int, iconid: Int):String,
+
+    #    CommentLike
+    create_icon_for_commentlike(userid: String,commentid: Int, iconid: Int):String,
+    delete_icon_for_commentlike(userid: String,commentid: Int, iconid: Int):String,
+
+    #    Bookmark
+    create_bookmark(userid: String, postid:Int):Bookmark,
+    delete_bookmark(userid: String, postid:Int):String,
+
+    #    Notice
+    create_notice(userid: String,content: String, type:Int,subject: Int):Notice,
+    delete_notice(noticeid: Int):String,
+    update_isseen_true(noticeid: Int):Notice,
+    update_isseen_false(noticeid: Int):Notice,
+
+    #    Follow
+    create_follow(userid: String, followerid:String):String,
+    delete_follow(userid: String, followerid:String):String,
+
+    #     Report
+    create_report_user(report: ReportRequest, userid:String, reporterid: String):String,
+    create_report_post(report: ReportRequest, postid:Int, reporterid: String):String,
+    create_report_comment(report: ReportRequest, commentid:Int, reporterid: String):String,
+    delete_report_by_userid(userid:String):String,
+    delete_report_by_postid(postid:Int):String,
+    delete_report_by_commentid(commentid:Int):String,
+
+    #    Topic
+    create_topic(userid: String,topicname:String):String,
+    delete_topic(topicid:Int):String,
+
+    #   Group
+    create_group(group:GroupRequest,admin:String):String,
+    update_group(group:GroupRequest):String,
+    delete_group(groupid:Int):String,
+
+    #   User_Group
+    join_group(userid: String, groupid: Int):String,
+    leave_group(userid: String, groupid: Int):String,
+    update_check(userid: String, groupid: Int, check:Int):String,
+}
+type Subscription{
+    sub_all_notice_by_userid(userid: String):[Notice],
+    sub_status_user(userid:String):User,
+}
+type Bookmark {
+    bookmarkid : Int!,
+    post_bookmark : Post,
+    user_bookmark : User,
+    createday: LocalDateTime,
+}
+input BookmarkRequest {
+    post_bookmarkid : Int,
+    user_bookmarkid : Int,
+    createday: LocalDateTime,
+}
+type  Post {
+    postid:Int!,
+    user_post:User,
+    content:String,
+    title:String,
+    createday:LocalDateTime,
+    updateday:LocalDateTime,
+    topic_post:Topic,
+    image:String,
+    ishide:Int,
+    isdelete:Int,
+    requiredreputation:Int,
+    totalread:Int,
+    group_post:Group,
+}
+input  PostRequest {
+    postid:Int
+    user_post:String,
+    content:String,
+    title:String,
+    createday:LocalDateTime,
+    updateday:LocalDateTime,
+    topic_postid:Int,
+    ishide:Int,
+    image:String,
+    isdelete:Int,
+    totalread:Int,
+    requiredreputation:Int,
+    group_post:Int,
+}
+type User{
+    userid:String!,
+    username:String,
+    fullname:String,
+    email:String,
+    address:String,
+    phone:String,
+    birthday:Date,
+    gender:String,
+    image:String,
+    createday:LocalDateTime,
+    role:Role,
+    reputation:Int,
+    status:Int,
+    isbanid:IsBan,
+    mssv:String,
+}
+input UserRequest{
+    userid:String,
+    username:String,
+    fullname:String,
+    email:String,
+    address:String,
+    phone:String,
+    birthday:Date,
+    gender:String,
+    image:String,
+    createday:LocalDateTime,
+    roleid:Int,
+    reputation:Int,
+    status:Int,
+    isbanid:Int,
+    mssv:String,
+}
+
+type Role{
+    roleid:Int!,
+    rolename:String,
+    path:[String],
+}
+type Topic{
+    topicid:Int!,
+    topicname:String,
+    createday:LocalDateTime,
+    user_topic:User,
+    ishide:Int,
+    isdelete:Int,
+}
+input TopicRequest{
+    topicid:Int,
+    topicname:String,
+    createday:LocalDateTime,
+    user_topicid:Int,
+    ishide:Int,
+    isdelete:Int,
+}
+type Comment{
+    commentid:Int!,
+    user_comment:User,
+    post_comment:Post,
+    content:String,
+    createday:LocalDateTime,
+    updateday:LocalDateTime,
+    comment_comment:Comment,
+    isdelete:Int,
+}
+input CommentRequest{
+    commentid:Int,
+    user_commentid:Int,
+    post_commentid:Int,
+    content:String,
+    createday:LocalDateTime,
+    updateday:LocalDateTime,
+    isdelete:Int,
+}
+type Icon{
+    iconid:Int!,
+    iconname:String,
+    iconimage:String
+}
+input IconRequest{
+    iconname:String,
+    iconimage:String
+}
+type Comment_Like{
+    commentlikeid:Int!,
+    comment_commentlike:Comment,
+    user_commentlike:User,
+    icon_commentlike:Icon,
+    createday: LocalDateTime,
+}
+input Comment_LikeRequest{
+    comment_commentlikeid:Int,
+    user_commentlikeid:Int,
+    icon_commentlikeid:Int,
+    createday: LocalDateTime,
+}
+type Post_Like{
+    postlikeid:Int!,
+    post_postlike:Post,
+    user_postlike:User,
+    icon_postlike:Icon,
+    createday:LocalDateTime,
+}
+input Post_LikeRequest{
+    post_postlikeid:Int,
+    user_postlikeid:Int,
+    icon_postlikeid:Int,
+    createday:LocalDateTime,
+}
+type Notice{
+    noiticeid: Int!,
+    user_notice:User,
+    content:String,
+    createday:LocalDateTime,
+    isseen:Int,
+    type:Int,
+    subjectid:Int
+}
+input NoticeRequest{
+    noticeid: Int,
+    user_notice:Int,
+    content:String,
+    createday:LocalDateTime,
+    type:Int,
+    subjectid:Int
+}
+
+type IsBan{
+    isbanid:Int!,
+    nameban:String,
+    description: String,
+}
+type Follow{
+    followerid:Int!,
+    user_follow:User,
+    user_follower:User,
+    createday:LocalDateTime,
+}
+type Report{
+    reportid:Int!,
+    reason:String,
+    content:String,
+    type:Int,
+    createday:LocalDateTime,
+    user_report:User,
+    post_report:Post,
+    comment_report:Comment,
+    user_reporter:User,
+}
+input ReportRequest{
+    reason:String,
+    content:String,
+    type:Int,
+    createday:LocalDateTime,
+    user_report:String,
+    post_report:Int,
+    comment_report:Int,
+    user_reporter:String,
+}
+type ViewPost{
+    viewid :Int!,
+    createday: LocalDateTime,
+    user_view:User,
+    post_view:Post
+}
+type Group{
+    groupid:Int,
+    groupname:String,
+    image:String,
+    createday:LocalDateTime,
+    user_group:User,
+    reputaion:Int,
+    description:String,
+}
+input GroupRequest{
+    groupid:Int,
+    groupname:String,
+    image:String,
+    createday:LocalDateTime,
+    user_group:String,
+    reputaion:Int,
+    description:String,
+}
+type User_Group{
+    user_groupid:Int,
+    user_usergroup:User,
+    group_usergroup:Group,
+    createday:LocalDateTime,
+    checked:Int,
+}
