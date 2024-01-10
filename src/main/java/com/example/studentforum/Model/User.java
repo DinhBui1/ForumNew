@@ -29,13 +29,13 @@ public class User {
     private String fullname;
 
     @Column(name = "Phone")
-    private  String phone;
+    private String phone;
 
     @Column(name = "Address")
     private String address;
 
-    @Column(name ="Gender")
-    private  String gender;
+    @Column(name = "Gender")
+    private String gender;
 
     @Column(name = "Birthday")
     private Date birthday;
@@ -47,7 +47,7 @@ public class User {
     private LocalDateTime createday;
 
     @ManyToOne
-    @JoinColumn(name = "isbanid",nullable = false,referencedColumnName = "isbanid")
+    @JoinColumn(name = "isbanid", nullable = false, referencedColumnName = "isbanid")
     private IsBan isban;
 
     @Column(name = "Type")
@@ -64,61 +64,76 @@ public class User {
     private int reputation;
 
     @Column(name = "Status")
-    private  int status;
-    @OneToMany(mappedBy = "user_topic",cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Topic> listTopic;
+    private int status;
 
-    @OneToMany(mappedBy = "user_post",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user_post", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Post> listPost;
 
-    @OneToMany(mappedBy = "user_group",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user_group", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Group> listGroup;
 
-    @OneToMany(mappedBy = "user_view",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user_view", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<ViewPost> listViewPost;
 
-    @OneToMany(mappedBy = "user_notice",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user_notice", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Notice> listNotice;
 
-    @OneToOne(mappedBy = "user_refresh",cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user_refresh", cascade = CascadeType.ALL)
     @JsonIgnore
     private RefreshToken refreshToken;
-    @OneToMany(mappedBy = "user_follow",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user_follow", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Follow> follow;
-    @OneToMany(mappedBy = "user_follower",cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "user_follower", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Follow> follower;
-    @OneToMany(mappedBy = "user_report",cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "user_message", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Message> message;
+
+    @OneToMany(mappedBy = "user_detailgroupmessage", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<DetailGroup_Message> user_detailgroupmessage;
+
+    @OneToMany(mappedBy = "user_content", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Content_Message> content_messages;
+
+    @OneToMany(mappedBy = "user_contentgroup", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Content_GroupMessage> user_contentgroup;
+
+    @OneToMany(mappedBy = "user_report", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Report> report;
 
-    @OneToMany(mappedBy = "user_reporter",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user_reporter", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Report> reporter;
 
-    @OneToMany(mappedBy = "user_comment",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user_comment", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Comment> listComment;
 
-    @OneToMany(mappedBy = "user_bookmark",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user_bookmark", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Bookmark> listBookmark;
 
-    @OneToMany(mappedBy = "user_postlike",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user_postlike", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Post_Like> listPostlike;
 
-    @OneToMany(mappedBy = "user_usergroup",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user_usergroup", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<User_Group> listUsergroup;
 
-    @OneToMany(mappedBy = "user_commentlike",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user_commentlike", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Comment_Like> listCommentlike;
 
@@ -237,6 +252,7 @@ public class User {
     public void setUserid(String userid) {
         this.userid = userid;
     }
+
     public String getUsername() {
         return username;
     }
@@ -267,14 +283,6 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
-    }
-
-    public List<Topic> getListTopic() {
-        return listTopic;
-    }
-
-    public void setListTopic(List<Topic> listTopic) {
-        this.listTopic = listTopic;
     }
 
     public List<Post> getListPost() {

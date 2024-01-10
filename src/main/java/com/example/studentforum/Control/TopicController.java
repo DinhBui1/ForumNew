@@ -16,15 +16,17 @@ public class TopicController {
     private TopicService topicService;
 
     @MutationMapping
-    public String create_topic(@Argument String userid, @Argument String topicname){
-        return topicService.createTopic(userid,topicname);
+    public String create_topic(@Argument String topicname) {
+        return topicService.createTopic(topicname);
     }
+
     @MutationMapping
-    public String delete_topic(@Argument int topicid){
+    public String delete_topic(@Argument int topicid) {
         return topicService.deleteTopic(topicid);
     }
+
     @QueryMapping
-    public List<Topic> topic(){
+    public List<Topic> topic() {
         return topicService.getallTopic();
     }
 }

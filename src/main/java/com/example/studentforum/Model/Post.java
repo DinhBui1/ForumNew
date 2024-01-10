@@ -18,12 +18,12 @@ public class Post {
     private int postid;
 
     @ManyToOne
-    @JoinColumn(name = "userid",nullable = false,referencedColumnName = "userid")
+    @JoinColumn(name = "userid", nullable = false, referencedColumnName = "userid")
     private User user_post;
 
-    @Column(name = "Title",columnDefinition = "LONGTEXT")
+    @Column(name = "Title", columnDefinition = "LONGTEXT")
     private String title;
-    @Column(name = "Content",columnDefinition = "LONGTEXT")
+    @Column(name = "Content", columnDefinition = "LONGTEXT")
     private String content;
     @Column(name = "Createday")
     private LocalDateTime createday;
@@ -31,37 +31,37 @@ public class Post {
     private Date updateday;
     @Column(name = "Totalread")
     private int totalread;
-    @Column(name = "Image",columnDefinition = "LONGTEXT")
+    @Column(name = "Image", columnDefinition = "LONGTEXT")
     private String image;
     @Column(name = "Requiredreputation")
     private int requiredreputation;
     @Column(name = "Ishide")
     private int ishide;
-
+    
     @ManyToOne
-    @JoinColumn(name = "topicid",referencedColumnName = "topicid")
-    private Topic topic_post;
-
-    @ManyToOne
-    @JoinColumn(name = "groupid",referencedColumnName = "groupid")
+    @JoinColumn(name = "groupid", referencedColumnName = "groupid")
     private Group group_post;
 
-    @OneToMany(mappedBy = "post_comment",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post_comment", cascade = CascadeType.ALL)
     private List<Comment> listComment;
 
-    @OneToMany(mappedBy = "post_bookmark",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post_bookmark", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Bookmark> listBookmark;
 
-    @OneToMany(mappedBy = "post_postlike",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post_postlike", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Post_Like> listPostlike;
 
-    @OneToMany(mappedBy = "post_report",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post_posttopic", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Post_Topic> listPosttopic;
+
+    @OneToMany(mappedBy = "post_report", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Report> report;
 
-    @OneToMany(mappedBy = "post_view",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post_view", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<ViewPost> listViewPost;
 
@@ -158,14 +158,6 @@ public class Post {
         this.content = content;
     }
 
-
-    public Topic getTopic_post() {
-        return topic_post;
-    }
-
-    public void setTopic_post(Topic topic_post) {
-        this.topic_post = topic_post;
-    }
 
     public List<Comment> getListComment() {
         return listComment;

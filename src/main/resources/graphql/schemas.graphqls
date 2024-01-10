@@ -16,7 +16,7 @@ type Query{
     post(limit: Int, pacing: Int):[Post],
     find_post_by_id(postid: Int):Post,
     find_post_by_userid(userid: String):[Post],
-    find_post_by_topicid(topicid:[Int]):[Post],
+    find_post_by_topicid(topicid:Int):[Post],
     find_post_by_keyword(keyword:String):[Post],
     find_post_in_group(groupid: Int):[Post],
 
@@ -70,6 +70,10 @@ type Query{
     statistic_user(year: Int):[Int],
     statistic_post(year: Int):[Int],
     statistic_post_in_topic:[Int],
+
+    #   Content_Message
+    get_content_message_by_messageid(messageid:String):[Content_Message],
+
 }
 type Mutation {
     createIcon (iconname: String, iconimage:String): Icon,
@@ -81,12 +85,12 @@ type Mutation {
 
 
     #    Post
-    update_post_by_pk (post:PostRequest,topic:TopicRequest):String,
+    update_post_by_pk (post:PostRequest,topic:[TopicRequest]):String,
     delete_post_by_pk (postid:Int):String,
-    create_post(post:PostRequest,user:UserRequest,topic:TopicRequest):String,
+    create_post(post:PostRequest,user:UserRequest,topic:[TopicRequest]):String,
     hide_post(postid: Int):String,
     update_totalread_post(postid: Int,userid: String):String,
-    create_post_in_group(post:PostRequest,user:UserRequest,topic:TopicRequest,groupid:Int):String,
+    create_post_in_group(post:PostRequest,user:UserRequest,topic:[TopicRequest],groupid:Int):String,
 
     #    Comment
     update_comment_by_pk(comment: CommentRequest):String,
@@ -125,7 +129,7 @@ type Mutation {
     delete_report_by_commentid(commentid:Int):String,
 
     #    Topic
-    create_topic(userid: String,topicname:String):String,
+    create_topic(topicname:String):String,
     delete_topic(topicid:Int):String,
 
     #   Group
@@ -137,6 +141,15 @@ type Mutation {
     join_group(userid: String, groupid: Int):String,
     leave_group(userid: String, groupid: Int):String,
     update_check(userid: String, groupid: Int, check:Int):String,
+
+    #    Message
+    create_message(userid1:String, user2:String):String,
+    block_message(messageid:String, user:String, isblock: Int):String,
+
+    #    Content_Message
+    create_content_message(content: String, messageid: String, userid: String):String,
+    update_content_message(content: String, contentid: Int):String,
+    delete_content_message(contentid: Int):String,
 }
 type Subscription{
     sub_all_notice_by_userid(userid: String):[Notice],
@@ -160,7 +173,6 @@ type  Post {
     title:String,
     createday:LocalDateTime,
     updateday:LocalDateTime,
-    topic_post:Topic,
     image:String,
     ishide:Int,
     isdelete:Int,
@@ -175,7 +187,6 @@ input  PostRequest {
     title:String,
     createday:LocalDateTime,
     updateday:LocalDateTime,
-    topic_postid:Int,
     ishide:Int,
     image:String,
     isdelete:Int,
@@ -223,11 +234,16 @@ type Role{
     rolename:String,
     path:[String],
 }
+type Post_Topic{
+    posttopicid: Int!,
+    post_posttopic: Post,
+    topic_posttopic: Topic,
+    createday: LocalDateTime,
+}
 type Topic{
     topicid:Int!,
     topicname:String,
     createday:LocalDateTime,
-    user_topic:User,
     ishide:Int,
     isdelete:Int,
 }
@@ -238,6 +254,40 @@ input TopicRequest{
     user_topicid:Int,
     ishide:Int,
     isdelete:Int,
+}
+type Group_Message{
+    group_messageid: Int!,
+    group_messagename:String,
+}
+type DetailGroup_Message{
+    detailgroup_messageid: Int!,
+    detailgroupmessage_groupmessage: Group_Message,
+    user_detailgroupmessage: User,
+    level: Int,
+    createday: LocalDateTime
+}
+type Content_GroupMessage{
+    content_groupmessageid: Int!,
+    content: String,
+    createday: LocalDateTime,
+    updateday: LocalDateTime,
+    detailgroupmessage_content: DetailGroup_Message,
+    user_contentgroup: User
+}
+type Message {
+    messageid: String!,
+    messagename: String,
+    createday: LocalDateTime,
+    user_message: User,
+    isblock: Int
+}
+type Content_Message {
+    contentid: Int!,
+    content: String,
+    createday: LocalDateTime,
+    updateday: LocalDateTime,
+    message_content: Message,
+    user_content: User
 }
 type Comment{
     commentid:Int!,

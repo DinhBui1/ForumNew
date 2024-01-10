@@ -18,13 +18,8 @@ public class TopicService {
     @Autowired
     private UserRepository userRepository;
 
-    public String createTopic(String userid, String topicname) {
-        User u = userRepository.getUserById(userid);
-        if (u == null) {
-            return "User Not Exit";
-        }
+    public String createTopic(String topicname) {
         Topic t = new Topic();
-        t.setUser_topic(u);
         t.setCreateday(LocalDateTime.now());
         t.setIsdelete(0);
         t.setIshide(0);

@@ -25,21 +25,17 @@ public class Topic {
     @Column(name = "Isdelete")
     private int isdelete;
 
-    @ManyToOne
-    @JoinColumn(name = "userid",nullable = false,referencedColumnName = "userid")
-    private User user_topic;
-
-    @OneToMany(mappedBy = "topic_post",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "topic_posttopic", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Post> listPost;
+    private List<Post_Topic> listPosttopic;
 
-    public Topic(int topicid, String topicname, LocalDateTime createday, int ishide, int isdelete, User user_topic) {
+    public Topic(int topicid, String topicname, LocalDateTime createday, int ishide, int isdelete) {
         this.topicid = topicid;
         this.topicname = topicname;
         this.createday = createday;
         this.ishide = ishide;
         this.isdelete = isdelete;
-        this.user_topic = user_topic;
+
     }
 
     public Topic() {
@@ -84,20 +80,6 @@ public class Topic {
     public void setCreateday(LocalDateTime createday) {
         this.createday = createday;
     }
+    
 
-    public User getUser_topic() {
-        return user_topic;
-    }
-
-    public void setUser_topic(User user_topic) {
-        this.user_topic = user_topic;
-    }
-
-    public List<Post> getListPost() {
-        return listPost;
-    }
-
-    public void setListPost(List<Post> listPost) {
-        this.listPost = listPost;
-    }
 }

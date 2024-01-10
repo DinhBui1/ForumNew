@@ -24,7 +24,7 @@ public class PostController {
     }
 
     @MutationMapping
-    public String update_post_by_pk(@Argument("post") Post post, @Argument("topic") Topic topic) {
+    public String update_post_by_pk(@Argument("post") Post post, @Argument("topic") List<Topic> topic) {
         return postService.updatePostById(post, topic);
     }
 
@@ -34,7 +34,7 @@ public class PostController {
     }
 
     @MutationMapping
-    public String create_post(@Argument("post") Post post, @Argument("user") User user, @Argument("topic") Topic topic) {
+    public String create_post(@Argument("post") Post post, @Argument("user") User user, @Argument("topic") List<Topic> topic) {
         return postService.createPost(post, user, topic);
     }
 
@@ -59,7 +59,7 @@ public class PostController {
     }
 
     @QueryMapping
-    public List<Post> find_post_by_topicid(@Argument List<Integer> topicid) {
+    public List<Post> find_post_by_topicid(@Argument int topicid) {
         return postService.findPostbyTopicid(topicid);
     }
 
@@ -69,7 +69,7 @@ public class PostController {
     }
 
     @MutationMapping
-    public String create_post_in_group(@Argument("post") Post post, @Argument("user") User user, @Argument("topic") Topic topic, @Argument int groupid) {
+    public String create_post_in_group(@Argument("post") Post post, @Argument("user") User user, @Argument("topic") List<Topic> topic, @Argument int groupid) {
         return postService.createPostinGroup(post, user, topic, groupid);
     }
 

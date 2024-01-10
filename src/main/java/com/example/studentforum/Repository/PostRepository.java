@@ -19,8 +19,6 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query("SELECT u FROM Post u WHERE (u.postid = ?1) ")
     Post getPostById(int Id);
 
-    @Query("SELECT u FROM Post u WHERE (u.topic_post.topicid = ?1) ORDER BY u.postid DESC")
-    List<Post> getPostByTopicid(int topicid);
 
     @Query("SELECT u FROM Post u WHERE YEAR(u.createday)=?1 and u.ishide=0")
     List<Post> statisticPost(int year);
@@ -37,14 +35,10 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query("SELECT u FROM Post u WHERE  (u.group_post.groupid = ?1) ORDER BY u.postid DESC")
     List<Post> getPostinGroup(int groupid);
 
-    @Query("SELECT u FROM Post u WHERE  u.ishide=0 ORDER BY u.postid DESC")
-    List<Post> statisPostinTopic();
-
-
     @Modifying
     @Transactional
     @Query("UPDATE Post u SET u.content = :#{#post.content}, u.title=:#{#post.title}," +
-            " u.topic_post=:#{#post.topic_post}, u.updateday=:#{#post.updateday}" +
+            " u.updateday=:#{#post.updateday}" +
             "  WHERE u.postid = :#{#post.postid}")
     void updatepost(@Param("post") Post post);
 

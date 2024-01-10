@@ -30,6 +30,10 @@ public class PostService {
     private ViewPostService viewPostService;
     @Autowired
     private GroupRepository groupRepository;
+    @Autowired
+    private Post_TopicRepository postTopicRepository;
+    @Autowired
+    private Post_TopicService postTopicService;
 
     public List<Post> getallPost(int limit, int pacing) {
 
@@ -38,7 +42,7 @@ public class PostService {
         return postRepository.getPost(pageable);
     }
 
-    public String updatePostById(Post post, Topic topic) {
+    public String updatePostById(Post post, List<Topic> topic) {
         Post p = postRepository.getPostById(post.getPostid());
         if (p.getUser_post().getIsban().getIsbanid() != 0) {
             return "User has been exit ban list";
@@ -46,9 +50,14 @@ public class PostService {
         if (p == null) {
             return "Post Not Exit";
         }
+        List<Post_Topic> postTopics = postTopicRepository.getPost_TopicByPostid(p.getPostid());
+        for (Post_Topic postTopic : postTopics) {
+            postTopicService.deletePostTopic(postTopic.getPosttopicid());
+        }
         if (topic != null) {
-            Topic t = topicRepository.getTopicById(topic.getTopicid());
-            p.setTopic_post(t);
+            for (Topic topic1 : topic) {
+                postTopicService.createPost_Topic(p.getPostid(), topic1.getTopicid());
+            }
         }
         p.setTitle(post.getTitle());
         p.setContent(post.getContent());
@@ -61,6 +70,10 @@ public class PostService {
     public String deletePostById(int id) {
         try {
             Post p = postRepository.getPostById(id);
+            List<Post_Topic> postTopics = postTopicRepository.getPost_TopicByPostid(p.getPostid());
+            for (Post_Topic postTopic : postTopics) {
+                postTopicService.deletePostTopic(postTopic.getPosttopicid());
+            }
             List<Post_Like> pls = post_likeRepository.getPostLikeByPostId(id);
             if (pls != null) {
                 for (Post_Like pl : pls) {
@@ -76,20 +89,22 @@ public class PostService {
         }
     }
 
-    public String createPost(Post post, User user, Topic topic) {
+    public String createPost(Post post, User user, List<Topic> topic) {
         User u = userRepository.getUserById(user.getUserid());
         if (u.getIsban().getIsbanid() != 0) {
             return "User has been exit ban list";
-        }
-        if (topic != null) {
-            Topic t = topicRepository.getTopicById(topic.getTopicid());
-            post.setTopic_post(t);
         }
         post.setUser_post(u);
         post.setIshide(0);
         post.setCreateday(LocalDateTime.now());
         post.setTotalread(0);
-        postRepository.save(post);
+        Post savedPost = postRepository.save(post);
+
+        if (topic != null) {
+            for (Topic topic1 : topic) {
+                postTopicService.createPost_Topic(savedPost.getPostid(), topic1.getTopicid());
+            }
+        }
 
         List<User> users = followService.getallFollowerByUserId(u.getUserid());
         for (User us : users) {
@@ -119,11 +134,12 @@ public class PostService {
         return postRepository.getPostById(id);
     }
 
-    public List<Post> findPostbyTopicid(List<Integer> topicid) {
+    public List<Post> findPostbyTopicid(int topicid) {
+        List<Post_Topic> postTopics = postTopicRepository.getPost_TopicByTopicid(topicid);
         List<Post> postList = new ArrayList<>();
-        for (int i : topicid) {
-            List<Post> posts = postRepository.getPostByTopicid(i);
-            postList.addAll(posts);
+        for (Post_Topic postTopic : postTopics) {
+            Post post = postRepository.getPostById(postTopic.getPost_posttopic().getPostid());
+            postList.add(post);
         }
         return postList;
     }
@@ -136,22 +152,24 @@ public class PostService {
         return postRepository.getPostByUserid(userid);
     }
 
-    public String createPostinGroup(Post post, User user, Topic topic, int groupid) {
+    public String createPostinGroup(Post post, User user, List<Topic> topic, int groupid) {
         User u = userRepository.getUserById(user.getUserid());
         Group g = groupRepository.getGroupByGroupId(groupid);
         if (u.getIsban().getIsbanid() != 0) {
             return "User has been exit ban list";
-        }
-        if (topic != null) {
-            Topic t = topicRepository.getTopicById(topic.getTopicid());
-            post.setTopic_post(t);
         }
         post.setUser_post(u);
         post.setIshide(0);
         post.setCreateday(LocalDateTime.now());
         post.setGroup_post(g);
         post.setTotalread(0);
-        postRepository.save(post);
+        Post savedPost = postRepository.save(post);
+
+        if (topic != null) {
+            for (Topic topic1 : topic) {
+                postTopicService.createPost_Topic(savedPost.getPostid(), topic1.getTopicid());
+            }
+        }
 
         userService.updateReputation(u.getUserid(), 20);
         return "Create Post Success";
@@ -172,7 +190,7 @@ public class PostService {
     }
 
     public int[] staticPostinTopic() {
-        List<Post> posts = postRepository.statisPostinTopic();
+        List<Post_Topic> postTopics = postTopicRepository.findAll();
         List<Topic> topics = topicRepository.findAll();
         Map<Integer, Integer> postCountByTopicId = new LinkedHashMap<>();
 
@@ -181,9 +199,8 @@ public class PostService {
             postCountByTopicId.put(topic.getTopicid(), 0);
         }
 
-
-        for (Post post : posts) {
-            int topicId = post.getTopic_post().getTopicid();
+        for (Post_Topic postTopic : postTopics) {
+            int topicId = postTopic.getTopic_posttopic().getTopicid();
             if (postCountByTopicId.containsKey(topicId)) {
                 int currentCount = postCountByTopicId.get(topicId);
                 postCountByTopicId.put(topicId, currentCount + 1);
