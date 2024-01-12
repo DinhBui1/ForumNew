@@ -19,4 +19,7 @@ public interface Content_GroupMessageRepository extends JpaRepository<Content_Gr
 
     @Query("SELECT u FROM Content_GroupMessage u WHERE (u.contentGroupMessageResponse.content_groupmessageid = ?1) ")
     public List<Content_GroupMessage> findByContentResponseId(int contentresponseId);
+
+    @Query("SELECT u FROM Content_GroupMessage u WHERE u.groupmessage_content.group_messageid = ?1 ")
+    public List<Content_GroupMessage> findBygroupmessage(int groupmessageis);
 }

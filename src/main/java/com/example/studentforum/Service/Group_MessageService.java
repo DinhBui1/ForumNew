@@ -1,9 +1,11 @@
 package com.example.studentforum.Service;
 
 import com.example.studentforum.Authetication.JwtAuthenticationToken;
+import com.example.studentforum.Model.Content_GroupMessage;
 import com.example.studentforum.Model.DetailGroup_Message;
 import com.example.studentforum.Model.Group_Message;
 import com.example.studentforum.Model.User;
+import com.example.studentforum.Repository.Content_GroupMessageRepository;
 import com.example.studentforum.Repository.DetailGroup_MessageRepository;
 import com.example.studentforum.Repository.Group_MessageRepository;
 import com.example.studentforum.Repository.UserRepository;
@@ -13,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class Group_MessageService {
@@ -26,6 +29,8 @@ public class Group_MessageService {
     private DetailGroup_MessageService detailGroup_messageService;
     @Autowired
     private Content_GroupMessageService content_groupMessageService;
+    @Autowired
+    private Content_GroupMessageRepository content_groupMessageRepository;
 
     public String createGroup_Message(Group_Message group_message, String userid) {
         try {
@@ -82,6 +87,17 @@ public class Group_MessageService {
             if (dgm.getLevel() != 1) {
                 return "You are not owner of this Group_Message";
             }
+
+            List<Content_GroupMessage> content_groupMessages = content_groupMessageRepository.findBygroupmessage(groupmessageid);
+            for (Content_GroupMessage cgm : content_groupMessages) {
+                content_groupMessageService.deleteContent_GroupMessageNotoken(cgm.getContent_groupmessageid());
+            }
+
+            List<DetailGroup_Message> detailGroup_messages = detailGroup_messageRepository.getDetailGroup_MessageByGroupmessageid(groupmessageid);
+            for (DetailGroup_Message d : detailGroup_messages) {
+                detailGroup_messageRepository.delete(d);
+            }
+
             group_messageRepository.delete(gm);
             return "Delete Group_Message Success";
         } catch (Exception e) {

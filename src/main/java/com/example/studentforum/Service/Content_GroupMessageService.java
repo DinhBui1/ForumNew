@@ -95,6 +95,28 @@ public class Content_GroupMessageService {
         return "Delete content group message successfully";
     }
 
+    public String deleteContent_GroupMessageNotoken(int contentId) {
+        Content_GroupMessage content_groupMessage = content_groupMessageRepository.findByContentId(contentId);
+        if (content_groupMessage == null) {
+            return "Content group message not found";
+        }
+        List<Content_GroupMessage> content_groupMessages = content_groupMessageRepository.findByContentResponseId(contentId);
+        if (content_groupMessages != null) {
+            for (Content_GroupMessage c : content_groupMessages) {
+                c.setContentGroupMessageResponse(null);
+                content_groupMessageRepository.save(c);
+            }
+        }
+        List<ContentGroupMessage_Icon> cgmi = contentGroupMessage_iconRepository.getContentGroupMessage_IconByMessageid(contentId);
+        if (cgmi != null) {
+            for (ContentGroupMessage_Icon c : cgmi) {
+                contentGroupMessage_iconRepository.delete(c);
+            }
+        }
+        content_groupMessageRepository.delete(content_groupMessage);
+        return "Delete content group message successfully";
+    }
+
     public List<Content_GroupMessage> getContent_GroupMessagebyGroupmessageidandUserid(int groupmessageId) {
         return content_groupMessageRepository.getContent_GroupMessagebyGroupmessageidandUserid(groupmessageId);
     }

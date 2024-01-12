@@ -21,4 +21,9 @@ public class Group_MessageController {
     public String update_group_message(@Argument Group_Message group_message) {
         return group_messageService.updateGroup_Message(group_message);
     }
+
+    @MutationMapping
+    public String delete_group_message(@Argument int group_messageid) {
+        return group_messageService.deleteGroup_Message(group_messageid);
+    }
 }

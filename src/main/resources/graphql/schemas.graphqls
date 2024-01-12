@@ -166,6 +166,7 @@ type Mutation {
     #   Group_Message
     create_group_message(group_message: Group_MessageRequest, userid:String):String,
     update_group_message(group_message: Group_MessageRequest):String,
+    delete_group_message(group_messageid: Int):String,
 
     #   DetailGroup_Message
     join_group_message(groupmessageid: Int, userid:String, level: Int):String,
