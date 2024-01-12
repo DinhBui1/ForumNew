@@ -12,25 +12,21 @@ import java.util.List;
 @Table(name = "Message")
 public class Message {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Messageid")
-    private String messageid;
+    private int messageid;
 
     @Column(name = "Messagename")
     private String messagename;
 
     @Column(name = "Createday")
     private LocalDateTime createday;
-    
-    @ManyToOne
-    @JoinColumn(name = "user_message", referencedColumnName = "userid")
-    private User user_message;
 
-    @Column(name = "Isblock")
-    private int isblock;
+    @OneToMany(mappedBy = "detailmessage_message", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<DetailMessage> detailmessage_message;
 
     @OneToMany(mappedBy = "message_content", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Content_Message> content_messages;
-
-
+    private List<Content_Message> message_content;
 }

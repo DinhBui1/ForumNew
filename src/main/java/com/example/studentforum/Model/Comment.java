@@ -17,15 +17,15 @@ public class Comment {
     @Column(name = "Commentid")
     private int commentid;
 
-    @OneToMany(mappedBy = "comment_comment",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "comment_comment", cascade = CascadeType.ALL)
     private List<Comment> listComment;
 
     @ManyToOne
-    @JoinColumn(name = "userid",nullable = false,referencedColumnName = "userid")
+    @JoinColumn(name = "userid", nullable = false, referencedColumnName = "userid")
     private User user_comment;
 
     @ManyToOne
-    @JoinColumn(name = "postid",referencedColumnName = "postid")
+    @JoinColumn(name = "postid", referencedColumnName = "postid")
     @JsonIgnore
     private Post post_comment;
 
@@ -34,19 +34,20 @@ public class Comment {
     @JsonIgnore
     private Comment comment_comment;
 
-    @Column(name = "Content",columnDefinition = "LONGTEXT")
+    @Column(name = "Content", columnDefinition = "LONGTEXT")
     private String content;
 
     @Column(name = "Createday")
     private LocalDateTime createday;
+
     @Column(name = "Updateday")
     private LocalDateTime updateday;
 
-    @OneToMany(mappedBy = "comment_commentlike",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "comment_commentlike", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Comment_Like> listCommentlike;
 
-    @OneToMany(mappedBy = "comment_report",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "comment_report", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Report> report;
 

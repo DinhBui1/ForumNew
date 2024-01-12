@@ -72,7 +72,17 @@ type Query{
     statistic_post_in_topic:[Int],
 
     #   Content_Message
-    get_content_message_by_messageid(messageid:String):[Content_Message],
+    get_content_message_by_messageid(messageid:Int):[Content_Message],
+
+    #   DetailMessage
+    get_detail_message_by_userid(userid:String):[DetailMessage],
+
+    #   DetailGroup_Message
+    get_detailgroup_message_by_userid(userid: String):[DetailGroup_Message],
+
+    #   Content_GroupMessage
+    get_content_groupmessage_by_groupmessageid(groupmessageId:Int):[Content_GroupMessage],
+
 
 }
 type Mutation {
@@ -143,13 +153,33 @@ type Mutation {
     update_check(userid: String, groupid: Int, check:Int):String,
 
     #    Message
-    create_message(userid1:String, user2:String):String,
-    block_message(messageid:String, user:String, isblock: Int):String,
+    create_message(userid1:String, userid2:String):String,
+
+    #    DetailMessage
+    block_message(messageid:Int, userid:String, isblock:Int):String,
 
     #    Content_Message
-    create_content_message(content: String, messageid: String, userid: String):String,
+    create_content_message(content: String, messageid: Int, userid: String, messageresponseid: Int):String,
     update_content_message(content: String, contentid: Int):String,
     delete_content_message(contentid: Int):String,
+
+    #   Group_Message
+    create_group_message(group_message: Group_MessageRequest, userid:String):String,
+    update_group_message(group_message: Group_MessageRequest):String,
+
+    #   DetailGroup_Message
+    join_group_message(groupmessageid: Int, userid:String, level: Int):String,
+    update_level_detailgroup_message(groupmessageid: Int, userid:String, level: Int):String,
+    leave_group_message(groupmessageid: Int, userid:String):String,
+
+    #   Content_GroupMessage
+    create_content_groupmessage(content: String, groupmessageId: Int, userId: String, messageresponseid: Int):String,
+    update_content_groupmessage(content: String, contentId: Int):String,
+    delete_content_groupmessage(contentId: Int):String,
+
+    #   Content_GroupMessage_Icon
+    create_content_groupmessage_icon(iconid: Int, contentgroupmessageid: Int):String,
+
 }
 type Subscription{
     sub_all_notice_by_userid(userid: String):[Notice],
@@ -258,6 +288,16 @@ input TopicRequest{
 type Group_Message{
     group_messageid: Int!,
     group_messagename:String,
+    group_messageimage:String,
+    createday: LocalDateTime,
+    group_messagedescription:String,
+}
+input Group_MessageRequest{
+    group_messageid: Int,
+    group_messagename:String,
+    group_messageimage:String,
+    createday: LocalDateTime,
+    group_messagedescription:String,
 }
 type DetailGroup_Message{
     detailgroup_messageid: Int!,
@@ -271,15 +311,27 @@ type Content_GroupMessage{
     content: String,
     createday: LocalDateTime,
     updateday: LocalDateTime,
-    detailgroupmessage_content: DetailGroup_Message,
-    user_contentgroup: User
+    groupmessage_content: DetailGroup_Message,
+    user_contentgroup: User,
+    contentMessageResponse: Content_GroupMessage,
+}
+type ContentGroupMessage_Icon{
+    content_groupmessage_iconid: Int!,
+    content_iconcontentgroupmessage: Content_GroupMessage,
+    icon_iconcontentgroupmessage: Icon,
+    user_iconcontentgroupmessage: User,
+    createday: LocalDateTime,
 }
 type Message {
-    messageid: String!,
+    messageid: Int!,
     messagename: String,
     createday: LocalDateTime,
-    user_message: User,
-    isblock: Int
+}
+type DetailMessage {
+    detailmessageid: Int!,
+    detailmessage_message: Message,
+    user_detailmessage: User,
+    isblock: Int,
 }
 type Content_Message {
     contentid: Int!,
@@ -288,6 +340,8 @@ type Content_Message {
     updateday: LocalDateTime,
     message_content: Message,
     user_content: User
+    contentMessageResponse: Content_Message,
+    icon_contentmessage: Icon,
 }
 type Comment{
     commentid:Int!,

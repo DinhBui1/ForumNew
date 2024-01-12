@@ -78,6 +78,10 @@ public class User {
     @JsonIgnore
     private List<ViewPost> listViewPost;
 
+    @OneToMany(mappedBy = "user_iconcontentgroupmessage", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<ContentGroupMessage_Icon> contentGroupMessage_icons;
+
     @OneToMany(mappedBy = "user_notice", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Notice> listNotice;
@@ -93,13 +97,13 @@ public class User {
     @JsonIgnore
     private List<Follow> follower;
 
-    @OneToMany(mappedBy = "user_message", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Message> message;
-
     @OneToMany(mappedBy = "user_detailgroupmessage", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<DetailGroup_Message> user_detailgroupmessage;
+
+    @OneToMany(mappedBy = "user_detailmessage", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<DetailMessage> user_detailmessage;
 
     @OneToMany(mappedBy = "user_content", cascade = CascadeType.ALL)
     @JsonIgnore

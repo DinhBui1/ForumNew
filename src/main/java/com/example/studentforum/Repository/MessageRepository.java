@@ -10,6 +10,10 @@ import java.util.List;
 
 @Repository
 public interface MessageRepository extends JpaRepository<Message, String> {
-    @Query("SELECT u FROM Message u WHERE  (u.messageid = ?1 and u.user_message.userid = ?2) ")
-    Message getMessagesByMessageid(String messageid, String userid);
+    @Query("SELECT u FROM Message u WHERE  (u.messageid = ?1) ")
+    Message getMessagesByMessageid(int messageid);
+
+    @Query("SELECT u FROM Message u WHERE  (u.messagename = ?1 ) ")
+    Message getMessagesByMessagename(String messagename);
+
 }

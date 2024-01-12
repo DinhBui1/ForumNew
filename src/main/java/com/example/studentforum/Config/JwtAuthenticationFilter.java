@@ -1,5 +1,6 @@
 package com.example.studentforum.Config;
 
+import com.example.studentforum.Authetication.JwtAuthenticationToken;
 import com.example.studentforum.Model.CustomAdminDetails;
 import com.example.studentforum.Model.CustomUserDetails;
 import com.example.studentforum.Model.User;
@@ -42,22 +43,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 String token = authorizationHeader.substring(7);
                 Claims claims = tokenService.getClaimFromJWT(token);
                 String sub = claims.getSubject();
-                int roleid =(int) claims.get("roleid");
+                int roleid = (int) claims.get("roleid");
                 User u = userService.getUserByid(sub);
                 UserDetails userDetails = createUserDetails(u, roleid);
 
                 if (sub != null) {
-                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    JwtAuthenticationToken auth = new JwtAuthenticationToken(userDetails, sub, userDetails.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 }
-
             }
         } catch (Exception e) {
-        System.out.println(e.getMessage());
+            System.out.println(e.getMessage());
         }
 
         filterChain.doFilter(request, response);
     }
+
     private UserDetails createUserDetails(User u, int roleid) {
         if (roleid == 2) {
             return new CustomUserDetails(u);

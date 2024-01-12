@@ -1,9 +1,11 @@
 package com.example.studentforum.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -24,10 +26,22 @@ public class Content_GroupMessage {
     private LocalDateTime updateday;
 
     @ManyToOne
-    @JoinColumn(name = "detailgroupmessage_content", referencedColumnName = "detailgroup_messageid")
-    private DetailGroup_Message detailgroupmessage_content;
+    @JoinColumn(name = "groupmessage_content", referencedColumnName = "group_messageid")
+    private Group_Message groupmessage_content;
 
     @ManyToOne
     @JoinColumn(name = "user_contentgroup", referencedColumnName = "userid")
     private User user_contentgroup;
+
+    @OneToMany(mappedBy = "contentGroupMessageResponse", cascade = CascadeType.ALL)
+    private List<Content_GroupMessage> contentGroupMessages;
+
+    @ManyToOne
+    @JoinColumn(name = "contentGroupMessageResponse")
+    @JsonIgnore
+    private Content_GroupMessage contentGroupMessageResponse;
+
+    @OneToMany(mappedBy = "content_iconcontentgroupmessage", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<ContentGroupMessage_Icon> content_iconcontentgroupmessage;
 }

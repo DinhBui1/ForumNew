@@ -17,15 +17,20 @@ public class Icon {
     @Column(name = "Iconame")
     private String iconname;
     @Column(name = "Iconimage")
-    private String  iconimage;
+    private String iconimage;
 
-    @OneToMany(mappedBy = "icon_postlike",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "icon_postlike", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Post_Like> listPostlike;
 
-    @OneToMany(mappedBy = "icon_commentlike",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "icon_commentlike", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Comment_Like> listCommentlike;
+    
+
+    @OneToMany(mappedBy = "icon_iconcontentgroupmessage", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<ContentGroupMessage_Icon> icon_iconcontentgroupmessage;
 
     public Icon(int iconid, String iconname, String iconimage) {
         this.iconid = iconid;

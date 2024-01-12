@@ -30,7 +30,5 @@ public class DetailGroup_Message {
     @Column(name = "Createday")
     private LocalDateTime createday;
 
-    @OneToMany(mappedBy = "detailgroupmessage_content", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Content_GroupMessage> detailgroupmessage_content;
+
 }

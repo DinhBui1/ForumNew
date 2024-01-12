@@ -28,8 +28,8 @@ import java.util.Map;
 @Service
 public class TokenService {
 
- //   private static  final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private static  final String secretKey = "forumqwerwthrbgfgvrtevgbetergeytbtgvbtr1242352";
+    //   private static  final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private static final String secretKey = "forumqwerwthrbgfgvrtevgbetergeytbtgvbtr1242352";
     private final long accessTokenExpiration = 7200;
     private final long refreshTokenExpiration = 86400;
 
@@ -41,19 +41,21 @@ public class TokenService {
                 .setSubject(id)
                 .claim("roleid", roleId)
                 .setExpiration(expiration)
-                .signWith(SignatureAlgorithm.HS256,secretKey)
+                .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
+
     public String generateRefreshToken(String id, int roleId) {
         String refreshToken = Jwts.builder()
                 .setSubject(id)
                 .claim("roleid", roleId)
                 .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration * 1000))
-                .signWith(SignatureAlgorithm.HS256,secretKey)
+                .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
 
         return refreshToken;
     }
+
     public static boolean isTokenExpired(String token) {
         try {
             Claims claims = Jwts.parser()
@@ -67,12 +69,12 @@ public class TokenService {
             return expirationTime < currentTime;
         } catch (ExpiredJwtException e) {
             return true;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return true;
         }
 
     }
+
     public Claims getClaimFromJWT(String token) {
 
         Claims claims = Jwts.parser()
@@ -82,4 +84,14 @@ public class TokenService {
 
         return claims;
     }
+
+    public String getSubjectFromJWT(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody();
+        String sub = claims.getSubject();
+        return sub;
+    }
+    
 }

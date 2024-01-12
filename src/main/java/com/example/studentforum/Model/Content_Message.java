@@ -1,9 +1,11 @@
 package com.example.studentforum.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -31,4 +33,16 @@ public class Content_Message {
     @ManyToOne
     @JoinColumn(name = "user_content", referencedColumnName = "userid")
     private User user_content;
+
+    @OneToMany(mappedBy = "contentMessageResponse", cascade = CascadeType.ALL)
+    private List<Content_Message> contentGroupMessages;
+
+    @ManyToOne
+    @JoinColumn(name = "contentMessageResponse")
+    @JsonIgnore
+    private Content_Message contentMessageResponse;
+
+    @ManyToOne
+    @JoinColumn(name = "iconid", referencedColumnName = "iconid")
+    private Icon icon_contentmessage;
 }

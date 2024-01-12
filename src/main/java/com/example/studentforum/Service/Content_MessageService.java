@@ -1,12 +1,14 @@
 package com.example.studentforum.Service;
 
-import com.example.studentforum.Model.Content_Message;
-import com.example.studentforum.Model.Message;
-import com.example.studentforum.Model.User;
+import com.example.studentforum.Authetication.JwtAuthenticationToken;
+import com.example.studentforum.Model.*;
 import com.example.studentforum.Repository.Content_MessageRepositpry;
+import com.example.studentforum.Repository.DetailMessageRepository;
 import com.example.studentforum.Repository.MessageRepository;
 import com.example.studentforum.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
@@ -21,48 +23,54 @@ public class Content_MessageService {
     private UserRepository userRepository;
     @Autowired
     private MessageRepository messageRepository;
+    @Autowired
+    private DetailMessageRepository detailMessageRepository;
 
-    public String addContentMessage(String content, String messageid, String userid) {
+    public String addContentMessage(String content, int messageid, String userid, int messageresponseid) {
         User u = userRepository.getUserById(userid);
         if (u == null) return "User not found";
-        Message message = messageRepository.getMessagesByMessageid(messageid, userid);
-        if (message == null) return "Message not found";
+        Message m = messageRepository.getMessagesByMessageid(messageid);
         Content_Message contentMessage = new Content_Message();
         contentMessage.setContent(content);
+        contentMessage.setMessage_content(m);
         contentMessage.setCreateday(LocalDateTime.now());
-        contentMessage.setMessage_content(message);
         contentMessage.setUser_content(u);
+        if (messageresponseid != 0) {
+            Content_Message dm = contentMessageRepositpry.getContent_MessageByContentid(messageresponseid);
+            contentMessage.setContentMessageResponse(dm);
+        }
         contentMessageRepositpry.save(contentMessage);
         return "Add content message success";
     }
 
-    public String deleteContentMessage(String contentid, String userid) {
-        User u = userRepository.getUserById(userid);
-        if (u == null) return "User not found";
+    public String deleteContentMessage(int contentid) {
         Content_Message contentMessage = contentMessageRepositpry.getContent_MessageByContentid(contentid);
         if (contentMessage == null) return "Content message not found";
-        if (contentMessage.getUser_content().getUserid().equals(userid)) {
-            contentMessageRepositpry.delete(contentMessage);
-            return "Delete content message success";
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String useridtoken = ((JwtAuthenticationToken) authentication).getUserid();
+        if (!useridtoken.equals(contentMessage.getUser_content().getUserid())) {
+            return "You are not owner of this content message";
         }
-        return "Delete content message fail";
+        contentMessageRepositpry.delete(contentMessage);
+        return "Delete content message success";
     }
 
-    public String updateContentMessage(String contentid, String content, String userid) {
-        User u = userRepository.getUserById(userid);
-        if (u == null) return "User not found";
+    public String updateContentMessage(int contentid, String content) {
         Content_Message contentMessage = contentMessageRepositpry.getContent_MessageByContentid(contentid);
         if (contentMessage == null) return "Content message not found";
-        if (contentMessage.getUser_content().getUserid().equals(userid)) {
-            contentMessage.setContent(content);
-            contentMessage.setUpdateday(LocalDateTime.now());
-            contentMessageRepositpry.save(contentMessage);
-            return "Update content message success";
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String useridtoken = ((JwtAuthenticationToken) authentication).getUserid();
+        if (!useridtoken.equals(contentMessage.getUser_content().getUserid())) {
+            return "You are not owner of this content message";
         }
-        return "Update content message fail";
+        contentMessage.setContent(content);
+        contentMessage.setUpdateday(LocalDateTime.now());
+        contentMessageRepositpry.save(contentMessage);
+        return "Update content message success";
     }
 
-    public List<Content_Message> getContentMessageByMessageid(String messageid) {
-        return contentMessageRepositpry.getContent_MessageByMessageid(messageid);
+    public List<Content_Message> getContentMessageByMessageid(int messageid) {
+        return contentMessageRepositpry.getContent_MessageByMessage_content(messageid);
     }
+
 }
