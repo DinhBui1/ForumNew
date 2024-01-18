@@ -1,14 +1,9 @@
 package com.example.studentforum.Service;
 
 import com.example.studentforum.Authetication.JwtAuthenticationToken;
-import com.example.studentforum.Model.ContentGroupMessage_Icon;
-import com.example.studentforum.Model.Content_GroupMessage;
-import com.example.studentforum.Model.Group_Message;
-import com.example.studentforum.Model.User;
-import com.example.studentforum.Repository.ContentGroupMessage_IconRepository;
-import com.example.studentforum.Repository.Content_GroupMessageRepository;
-import com.example.studentforum.Repository.Group_MessageRepository;
-import com.example.studentforum.Repository.UserRepository;
+import com.example.studentforum.Model.*;
+import com.example.studentforum.Repository.*;
+import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class Content_GroupMessageService {
@@ -27,6 +24,8 @@ public class Content_GroupMessageService {
     private UserRepository userRepository;
     @Autowired
     private ContentGroupMessage_IconRepository contentGroupMessage_iconRepository;
+    @Autowired
+    private DetailGroup_MessageRepository detailGroup_messageRepository;
 
     public String createContent_GroupMessage(String content, int groupmessageId, String userId, int messageresponseid) {
         Group_Message group_message = group_messageRepository.getGroup_MessageById(groupmessageId);
@@ -121,5 +120,20 @@ public class Content_GroupMessageService {
         return content_groupMessageRepository.getContent_GroupMessagebyGroupmessageidandUserid(groupmessageId);
     }
 
-
+    public Publisher<List<Content_GroupMessage>> getContent_GroupMessagebyGroupmessageidandUseridNotoken(int groupmessageId) {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String useridtoken = ((JwtAuthenticationToken) authentication).getUserid();
+            DetailGroup_Message detailGroup_message = detailGroup_messageRepository.getDetailGroup_MessageByMessageidandUserid(groupmessageId, useridtoken);
+            if (detailGroup_message == null) {
+                throw new RuntimeException("You are not in this group message");
+            }
+            return subscriber -> Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> {
+                List<Content_GroupMessage> cgm = content_groupMessageRepository.findGroupMessagesByUserIdOrderByLatestMessage(groupmessageId);
+                subscriber.onNext(cgm);
+            }, 0, 2, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 }

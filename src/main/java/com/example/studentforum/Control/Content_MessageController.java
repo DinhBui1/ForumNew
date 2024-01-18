@@ -2,10 +2,12 @@ package com.example.studentforum.Control;
 
 import com.example.studentforum.Model.Content_Message;
 import com.example.studentforum.Service.Content_MessageService;
+import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.graphql.data.method.annotation.SubscriptionMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -33,5 +35,10 @@ public class Content_MessageController {
     @QueryMapping
     public List<Content_Message> get_content_message_by_messageid(@Argument int messageid) {
         return contentMessageService.getContentMessageByMessageid(messageid);
+    }
+
+    @SubscriptionMapping
+    public Publisher<List<Content_Message>> sub_content_message_by_messageid(@Argument int messageid) {
+        return contentMessageService.getContent_MessagebyMessageidandUserid(messageid);
     }
 }

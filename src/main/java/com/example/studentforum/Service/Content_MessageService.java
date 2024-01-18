@@ -6,6 +6,7 @@ import com.example.studentforum.Repository.Content_MessageRepositpry;
 import com.example.studentforum.Repository.DetailMessageRepository;
 import com.example.studentforum.Repository.MessageRepository;
 import com.example.studentforum.Repository.UserRepository;
+import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class Content_MessageService {
@@ -73,4 +76,18 @@ public class Content_MessageService {
         return contentMessageRepositpry.getContent_MessageByMessage_content(messageid);
     }
 
+    public Publisher<List<Content_Message>> getContent_MessagebyMessageidandUserid(int messageId) {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String useridtoken = ((JwtAuthenticationToken) authentication).getUserid();
+            DetailMessage dm = detailMessageRepository.getDetailMessageByMessageid(messageId, useridtoken);
+            if (dm == null) throw new RuntimeException("You are not in this message");
+            return subscriber -> Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> {
+                List<Content_Message> cgm = contentMessageRepositpry.findMessagesByUserIdOrderByLatestMessage(messageId);
+                subscriber.onNext(cgm);
+            }, 0, 2, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 }
