@@ -2,6 +2,7 @@ package com.example.studentforum.Control;
 
 import com.example.studentforum.Model.Content_GroupMessage;
 import com.example.studentforum.Service.Content_GroupMessageService;
+import graphql.kickstart.execution.subscriptions.SubscriptionException;
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -38,7 +39,7 @@ public class Content_GroupMessageController {
     }
 
     @SubscriptionMapping
-    public Publisher<List<Content_GroupMessage>> sub_contentgroup_message_by_userid(@Argument int groupmessageId) {
+    public Publisher<List<Content_GroupMessage>> sub_contentgroup_message_by_userid(@Argument int groupmessageId) throws SubscriptionException {
         return content_groupMessageService.getContent_GroupMessagebyGroupmessageidandUseridNotoken(groupmessageId);
     }
 

@@ -89,9 +89,9 @@ public class UserService {
             User u = mapper.map(userDTO, User.class);
             if (userRepository.getUserByUsername(u.getUsername()) != null && userRepository.getUserByEmail(u.getEmail()) != null)
                 return ResponseEntity.status(400).body("User or email exit");
-            String[] parts = u.getEmail().split("@");
-            String MSSV = parts[0];
-            u.setMssv(MSSV);
+//            String[] parts = u.getEmail().split("@");
+//            String MSSV = parts[0];
+//            u.setMssv(MSSV);
             Role r = new Role(2);
             UUID randomUUID = UUID.randomUUID();
             String randomID = randomUUID.toString();

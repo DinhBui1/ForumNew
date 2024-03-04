@@ -2,10 +2,7 @@ package com.example.studentforum.Service;
 
 import com.example.studentforum.Authetication.JwtAuthenticationToken;
 import com.example.studentforum.Model.*;
-import com.example.studentforum.Repository.Content_MessageRepositpry;
-import com.example.studentforum.Repository.DetailMessageRepository;
-import com.example.studentforum.Repository.MessageRepository;
-import com.example.studentforum.Repository.UserRepository;
+import com.example.studentforum.Repository.*;
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -28,6 +25,8 @@ public class Content_MessageService {
     private MessageRepository messageRepository;
     @Autowired
     private DetailMessageRepository detailMessageRepository;
+    @Autowired
+    private IconRepository iconRepository;
 
     public String addContentMessage(String content, int messageid, String userid, int messageresponseid) {
         User u = userRepository.getUserById(userid);
@@ -90,4 +89,34 @@ public class Content_MessageService {
             throw new RuntimeException(e.getMessage());
         }
     }
+
+    public String createIconContentMessage(int contentid, int icon) {
+        Content_Message contentMessage = contentMessageRepositpry.getContent_MessageByContentid(contentid);
+        if (contentMessage == null) return "Content message not found";
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String useridtoken = ((JwtAuthenticationToken) authentication).getUserid();
+        if (!useridtoken.equals(contentMessage.getUser_content().getUserid())) {
+            return "You are not owner of this content message";
+        }
+        Content_Message cm = contentMessageRepositpry.getContent_MessageByContentidandIconid(contentid, icon);
+        if (cm != null) {
+            if (cm.getIcon_contentmessage().getIconid() == icon) {
+                cm.setIcon_contentmessage(null);
+                contentMessageRepositpry.save(cm);
+                return "Delete icon content message success";
+            } else {
+                Icon i = iconRepository.getIconById(icon);
+                contentMessage.setIcon_contentmessage(i);
+                contentMessageRepositpry.save(contentMessage);
+                return "Update icon content message success";
+            }
+        }
+        Icon i = iconRepository.getIconById(icon);
+        contentMessage.setIcon_contentmessage(i);
+        contentMessage.setUpdateday(LocalDateTime.now());
+        contentMessageRepositpry.save(contentMessage);
+        return "Update icon content message success";
+    }
+    
+
 }

@@ -3,6 +3,7 @@ package com.example.studentforum.Service;
 import com.example.studentforum.Authetication.JwtAuthenticationToken;
 import com.example.studentforum.Model.*;
 import com.example.studentforum.Repository.*;
+import graphql.kickstart.execution.subscriptions.SubscriptionException;
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -120,7 +121,7 @@ public class Content_GroupMessageService {
         return content_groupMessageRepository.getContent_GroupMessagebyGroupmessageidandUserid(groupmessageId);
     }
 
-    public Publisher<List<Content_GroupMessage>> getContent_GroupMessagebyGroupmessageidandUseridNotoken(int groupmessageId) {
+    public Publisher<List<Content_GroupMessage>> getContent_GroupMessagebyGroupmessageidandUseridNotoken(int groupmessageId) throws SubscriptionException {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String useridtoken = ((JwtAuthenticationToken) authentication).getUserid();
@@ -133,7 +134,7 @@ public class Content_GroupMessageService {
                 subscriber.onNext(cgm);
             }, 0, 2, TimeUnit.SECONDS);
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            throw new SubscriptionException(e.getMessage());
         }
     }
 }

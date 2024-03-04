@@ -41,4 +41,9 @@ public class Content_MessageController {
     public Publisher<List<Content_Message>> sub_content_message_by_messageid(@Argument int messageid) {
         return contentMessageService.getContent_MessagebyMessageidandUserid(messageid);
     }
+
+    @MutationMapping
+    public String add_icon_to_content_message(@Argument int contentid, @Argument int iconid) {
+        return contentMessageService.createIconContentMessage(contentid, iconid);
+    }
 }

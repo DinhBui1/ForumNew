@@ -165,6 +165,7 @@ type Mutation {
     create_content_message(content: String, messageid: Int, userid: String, messageresponseid: Int):String,
     update_content_message(content: String, contentid: Int):String,
     delete_content_message(contentid: Int):String,
+    add_icon_to_content_message( contentid: Int, iconid: Int):String,
 
     #   Group_Message
     create_group_message(group_message: Group_MessageRequest, userid:String):String,

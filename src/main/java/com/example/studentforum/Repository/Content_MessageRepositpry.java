@@ -22,5 +22,6 @@ public interface Content_MessageRepositpry extends JpaRepository<Content_Message
             "ORDER BY cgm.createday DESC LIMIT 50")
     List<Content_Message> findMessagesByUserIdOrderByLatestMessage(@Param("messageId") int messageid);
 
-
+    @Query("select c from Content_Message c where c.contentid = ?1 and c.icon_contentmessage.iconid = ?2   ")
+    Content_Message getContent_MessageByContentidandIconid(int contentid, int iconid);
 }
