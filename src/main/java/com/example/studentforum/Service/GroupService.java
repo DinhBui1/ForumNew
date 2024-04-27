@@ -1,5 +1,6 @@
 package com.example.studentforum.Service;
 
+import com.example.studentforum.Config.RedisManager;
 import com.example.studentforum.Model.Group;
 import com.example.studentforum.Model.Notice;
 import com.example.studentforum.Model.User;
@@ -9,6 +10,7 @@ import com.example.studentforum.Repository.UserRepository;
 import com.example.studentforum.Repository.User_GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.Jedis;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -68,7 +70,9 @@ public class GroupService {
         return "Delete Group Success";
     }
 
-    public List<Group> findGroupbyKeyword(String keyword) {
+    public List<Group> findGroupbyKeyword(String keyword, String userid) {
+        Jedis jedis = RedisManager.getConnection();
+        jedis.lpush(userid, keyword);
         return groupRepository.getGroupByKeyword(keyword);
     }
 

@@ -1,5 +1,6 @@
 package com.example.studentforum.Service;
 
+import com.example.studentforum.Config.RedisManager;
 import com.example.studentforum.DTO.UserDTO;
 import com.example.studentforum.Model.*;
 import com.example.studentforum.Repository.IsBanRepository;
@@ -22,6 +23,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import redis.clients.jedis.Jedis;
 
 
 import java.time.LocalDateTime;
@@ -384,7 +386,9 @@ public class UserService {
         return statistic;
     }
 
-    public List<User> getUserbayKeyword(String keyword) {
+    public List<User> getUserbayKeyword(String keyword, String userid) {
+        Jedis jedis = RedisManager.getConnection();
+        jedis.lpush(userid, keyword);
         return userRepository.getUserByKeyword(keyword);
     }
 }

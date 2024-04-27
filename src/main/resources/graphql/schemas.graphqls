@@ -10,14 +10,14 @@ type Query{
     get_top_reputation_user:[User],
     get_list_low_reputation:[User],
     get_list_ban_user:[User],
-    get_user_by_keyword(keyword:String):[User],
+    get_user_by_keyword(keyword:String, userid:String):[User],
 
     #    Post
-    post(limit: Int, pacing: Int):[Post],
+    post(limit: Int, pacing: Int):[PostDto],
     find_post_by_id(postid: Int):Post,
     find_post_by_userid(userid: String):[Post],
     find_post_by_topicid(topicid:Int):[Post],
-    find_post_by_keyword(keyword:String):[Post],
+    find_post_by_keyword(keyword:String, userid:String):[Post],
     find_post_in_group(groupid: Int):[Post],
 
     #    Comment
@@ -58,7 +58,7 @@ type Query{
     get_report_by_type(type:Int):[Report],
 
     #   Group
-    find_group_by_keyword(keyword:String):[Group],
+    find_group_by_keyword(keyword:String, userid:String):[Group],
     get_group_by_admin(admin:String):[Group],
     get_group_by_userid(userid:String):[Group],
     get_group_by_groupid(groupid:Int):Group,
@@ -218,6 +218,22 @@ type  Post {
     requiredreputation:Int,
     totalread:Int,
     group_post:Group,
+}
+type  PostDto {
+    postid:Int!,
+    user_post:User,
+    content:String,
+    title:String,
+    createday:LocalDateTime,
+    updateday:LocalDateTime,
+    image:String,
+    ishide:Int,
+    requiredreputation:Int,
+    totalread:Int,
+    group_post:Group,
+    totallike: Int,
+    totaldislike:Int,
+    listtopic:[Post_Topic],
 }
 input  PostRequest {
     postid:Int

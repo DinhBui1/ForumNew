@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class Post_TopicService {
@@ -49,5 +50,9 @@ public class Post_TopicService {
         Post_Topic postTopic = postTopicRepository.getPost_TopicByPost_topicid(post_topicid);
         postTopicRepository.delete(postTopic);
         return "Delete Post_Topic Success";
+    }
+
+    public List<Post_Topic> getPost_TopicbyPostid(int postid) {
+        return postTopicRepository.getPost_TopicByPostid(postid);
     }
 }

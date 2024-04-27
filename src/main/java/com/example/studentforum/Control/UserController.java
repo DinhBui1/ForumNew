@@ -98,7 +98,7 @@ public class UserController {
     }
 
     @QueryMapping
-    public List<User> get_user_by_keyword(@Argument String keyword) {
-        return userService.getUserbayKeyword(keyword);
+    public List<User> get_user_by_keyword(@Argument String keyword, @Argument String userid) {
+        return userService.getUserbayKeyword(keyword, userid);
     }
 }

@@ -1,11 +1,15 @@
 package com.example.studentforum.Service;
 
+import com.example.studentforum.Config.RedisManager;
+import com.example.studentforum.DTO.PostDTO;
 import com.example.studentforum.Model.*;
 import com.example.studentforum.Repository.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.Jedis;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -34,12 +38,25 @@ public class PostService {
     private Post_TopicRepository postTopicRepository;
     @Autowired
     private Post_TopicService postTopicService;
+    @Autowired
+    private Post_LikeService postLikeService;
 
-    public List<Post> getallPost(int limit, int pacing) {
+    public List<PostDTO> getallPost(int limit, int pacing) {
 
         int offset = (pacing - 1);
         Pageable pageable = PageRequest.of(offset, limit);
-        return postRepository.getPost(pageable);
+        List<Post> posts = postRepository.getPost(pageable);
+        List<PostDTO> postDTOs = new ArrayList<>();
+        for (Post post : posts) {
+            PostDTO postDTO = new PostDTO();
+            BeanUtils.copyProperties(post, postDTO);
+            postDTO.setTotallike(postLikeService.CountTotalLikeByPost(post.getPostid()));
+            postDTO.setTotaldislike(postLikeService.CountTotalDisLikeByPost(post.getPostid()));
+            postDTO.setListtopic(postTopicService.getPost_TopicbyPostid(post.getPostid()));
+            postDTOs.add(postDTO);
+        }
+
+        return postDTOs;
     }
 
     public String updatePostById(Post post, List<Topic> topic) {
@@ -144,7 +161,9 @@ public class PostService {
         return postList;
     }
 
-    public List<Post> findPostByKeyword(String keyword) {
+    public List<Post> findPostByKeyword(String keyword, String userid) {
+        Jedis jedis = RedisManager.getConnection();
+        jedis.lpush(userid, keyword);
         return postRepository.getPostByKeyword(keyword);
     }
 

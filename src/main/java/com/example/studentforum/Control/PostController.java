@@ -1,5 +1,6 @@
 package com.example.studentforum.Control;
 
+import com.example.studentforum.DTO.PostDTO;
 import com.example.studentforum.Model.Post;
 import com.example.studentforum.Model.Topic;
 import com.example.studentforum.Model.User;
@@ -19,7 +20,7 @@ public class PostController {
     private PostService postService;
 
     @QueryMapping
-    public List<Post> post(@Argument int limit, @Argument int pacing) {
+    public List<PostDTO> post(@Argument int limit, @Argument int pacing) {
         return postService.getallPost(limit, pacing);
     }
 
@@ -64,8 +65,8 @@ public class PostController {
     }
 
     @QueryMapping
-    public List<Post> find_post_by_keyword(@Argument String keyword) {
-        return postService.findPostByKeyword(keyword);
+    public List<Post> find_post_by_keyword(@Argument String keyword, @Argument String userid) {
+        return postService.findPostByKeyword(keyword, userid);
     }
 
     @MutationMapping

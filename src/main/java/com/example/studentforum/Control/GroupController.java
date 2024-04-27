@@ -16,32 +16,38 @@ public class GroupController {
     private GroupService groupService;
 
     @MutationMapping
-    public String create_group(@Argument Group group, @Argument String admin){
-        return groupService.createGroup(group,admin);
+    public String create_group(@Argument Group group, @Argument String admin) {
+        return groupService.createGroup(group, admin);
     }
+
     @MutationMapping
-    public String update_group(@Argument Group group){
+    public String update_group(@Argument Group group) {
         return groupService.updateGroup(group);
     }
+
     @MutationMapping
-    public String delete_group( @Argument int groupid){
+    public String delete_group(@Argument int groupid) {
         return groupService.deleteGroup(groupid);
     }
+
     @QueryMapping
-    public List<Group> find_group_by_keyword(@Argument String keyword){
-        return  groupService.findGroupbyKeyword(keyword);
+    public List<Group> find_group_by_keyword(@Argument String keyword, @Argument String userid) {
+        return groupService.findGroupbyKeyword(keyword, userid);
     }
+
     @QueryMapping
-    public List<Group> get_group_by_admin(@Argument String admin){
-        return  groupService.getGroupbyAdmin(admin);
+    public List<Group> get_group_by_admin(@Argument String admin) {
+        return groupService.getGroupbyAdmin(admin);
     }
+
     @QueryMapping
-    public List<Group> get_group_by_userid(@Argument String userid){
-        return  groupService.getGroupbyUserid(userid);
+    public List<Group> get_group_by_userid(@Argument String userid) {
+        return groupService.getGroupbyUserid(userid);
     }
+
     @QueryMapping
-    public Group get_group_by_groupid(@Argument int groupid){
-        return  groupService.getGroupbyGroupid(groupid);
+    public Group get_group_by_groupid(@Argument int groupid) {
+        return groupService.getGroupbyGroupid(groupid);
     }
 
 }
