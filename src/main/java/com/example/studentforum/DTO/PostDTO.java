@@ -40,5 +40,7 @@ public class PostDTO {
 
     private int totaldislike;
 
+    private int totalcomment;
+
     private List<Post_Topic> listtopic;
 }

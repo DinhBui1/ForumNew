@@ -43,6 +43,9 @@ public class User {
     @Column(name = "Image")
     private String image;
 
+    @Column(name = "Bio")
+    private String bio;
+
     @Column(name = "Createday")
     private LocalDateTime createday;
 

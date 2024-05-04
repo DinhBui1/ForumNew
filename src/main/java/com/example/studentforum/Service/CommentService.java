@@ -161,4 +161,9 @@ public class CommentService {
         }
         return 0;
     }
+
+    public int totalCommentbyPostid(int postid) {
+        List<Comment> comments = commentRepository.getCommentByPostId(postid);
+        return comments.size();
+    }
 }

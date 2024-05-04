@@ -29,4 +29,9 @@ public class TopicController {
     public List<Topic> topic() {
         return topicService.getallTopic();
     }
+
+    @QueryMapping
+    public List<Topic> find_topic_by_topicname(@Argument String topicname) {
+        return topicService.getTopicByName(topicname);
+    }
 }

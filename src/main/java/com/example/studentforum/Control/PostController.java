@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -40,7 +39,7 @@ public class PostController {
     }
 
     @QueryMapping
-    public Post find_post_by_id(@Argument int postid) {
+    public PostDTO find_post_by_id(@Argument int postid) {
         return postService.findPostByid(postid);
     }
 
@@ -55,17 +54,17 @@ public class PostController {
     }
 
     @QueryMapping
-    public List<Post> find_post_by_userid(@Argument String userid) {
+    public List<PostDTO> find_post_by_userid(@Argument String userid) {
         return postService.findPostByUserid(userid);
     }
 
     @QueryMapping
-    public List<Post> find_post_by_topicid(@Argument int topicid) {
+    public List<PostDTO> find_post_by_topicid(@Argument int topicid) {
         return postService.findPostbyTopicid(topicid);
     }
 
     @QueryMapping
-    public List<Post> find_post_by_keyword(@Argument String keyword, @Argument String userid) {
+    public List<PostDTO> find_post_by_keyword(@Argument String keyword, @Argument String userid) {
         return postService.findPostByKeyword(keyword, userid);
     }
 
@@ -75,7 +74,7 @@ public class PostController {
     }
 
     @QueryMapping
-    public List<Post> find_post_in_group(@Argument int groupid) {
+    public List<PostDTO> find_post_in_group(@Argument int groupid) {
         return postService.getPostinGroup(groupid);
     }
 
@@ -87,6 +86,11 @@ public class PostController {
     @QueryMapping
     public int[] statistic_post_in_topic() {
         return postService.staticPostinTopic();
+    }
+
+    @QueryMapping
+    public List<PostDTO> find_post_by_follow(@Argument String userid) {
+        return postService.findPostByFollowid(userid);
     }
 
 }

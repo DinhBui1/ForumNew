@@ -14,11 +14,12 @@ type Query{
 
     #    Post
     post(limit: Int, pacing: Int):[PostDto],
-    find_post_by_id(postid: Int):Post,
-    find_post_by_userid(userid: String):[Post],
-    find_post_by_topicid(topicid:Int):[Post],
-    find_post_by_keyword(keyword:String, userid:String):[Post],
-    find_post_in_group(groupid: Int):[Post],
+    find_post_by_id(postid: Int):PostDto,
+    find_post_by_follow(userid: String):[PostDto],
+    find_post_by_userid(userid: String):[PostDto],
+    find_post_by_topicid(topicid:Int):[PostDto],
+    find_post_by_keyword(keyword:String, userid:String):[PostDto],
+    find_post_in_group(groupid: Int):[PostDto],
 
     #    Comment
     comment(limit: Int, pacing: Int):[Comment],
@@ -28,6 +29,7 @@ type Query{
 
     #    Topic
     topic:[Topic],
+    find_topic_by_topicname(topicname: String):[Topic],
 
     #    Notice
     find_all_notice_by_userid(userid: String):[Notice],
@@ -233,6 +235,7 @@ type  PostDto {
     group_post:Group,
     totallike: Int,
     totaldislike:Int,
+    totalcomment:Int,
     listtopic:[Post_Topic],
 }
 input  PostRequest {
@@ -259,6 +262,7 @@ type User{
     birthday:Date,
     gender:String,
     image:String,
+    bio:String,
     createday:LocalDateTime,
     role:Role,
     reputation:Int,
@@ -276,6 +280,7 @@ input UserRequest{
     birthday:Date,
     gender:String,
     image:String,
+    bio:String,
     createday:LocalDateTime,
     roleid:Int,
     reputation:Int,

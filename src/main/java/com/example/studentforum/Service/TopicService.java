@@ -38,4 +38,8 @@ public class TopicService {
         return "Delete Topic Success";
     }
 
+    public List<Topic> getTopicByName(String name) {
+        return topicRepository.getTopicByName(name);
+    }
+
 }

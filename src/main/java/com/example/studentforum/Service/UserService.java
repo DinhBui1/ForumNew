@@ -76,6 +76,7 @@ public class UserService {
         u.setBirthday(user.getBirthday());
         u.setGender(user.getGender());
         u.setPhone(user.getPhone());
+        u.setBio(user.getBio());
         u.setAddress(user.getAddress());
         u.setImage(user.getImage());
         userRepository.updateaccount(u);

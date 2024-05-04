@@ -4,6 +4,7 @@ import com.example.studentforum.Config.RedisManager;
 import com.example.studentforum.DTO.PostDTO;
 import com.example.studentforum.Model.*;
 import com.example.studentforum.Repository.*;
+import org.apache.tomcat.util.descriptor.tld.TldRuleSet;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -40,6 +41,8 @@ public class PostService {
     private Post_TopicService postTopicService;
     @Autowired
     private Post_LikeService postLikeService;
+    @Autowired
+    private CommentService commentService;
 
     public List<PostDTO> getallPost(int limit, int pacing) {
 
@@ -48,11 +51,7 @@ public class PostService {
         List<Post> posts = postRepository.getPost(pageable);
         List<PostDTO> postDTOs = new ArrayList<>();
         for (Post post : posts) {
-            PostDTO postDTO = new PostDTO();
-            BeanUtils.copyProperties(post, postDTO);
-            postDTO.setTotallike(postLikeService.CountTotalLikeByPost(post.getPostid()));
-            postDTO.setTotaldislike(postLikeService.CountTotalDisLikeByPost(post.getPostid()));
-            postDTO.setListtopic(postTopicService.getPost_TopicbyPostid(post.getPostid()));
+            PostDTO postDTO = this.setPostToPostDTO(post);
             postDTOs.add(postDTO);
         }
 
@@ -147,28 +146,43 @@ public class PostService {
         return "Update TotalRead Success";
     }
 
-    public Post findPostByid(int id) {
-        return postRepository.getPostById(id);
+    public PostDTO findPostByid(int id) {
+        Post p = postRepository.getPostById(id);
+        PostDTO postDTO = this.setPostToPostDTO(p);
+        return postDTO;
     }
 
-    public List<Post> findPostbyTopicid(int topicid) {
+    public List<PostDTO> findPostbyTopicid(int topicid) {
         List<Post_Topic> postTopics = postTopicRepository.getPost_TopicByTopicid(topicid);
-        List<Post> postList = new ArrayList<>();
+        List<PostDTO> postList = new ArrayList<>();
         for (Post_Topic postTopic : postTopics) {
             Post post = postRepository.getPostById(postTopic.getPost_posttopic().getPostid());
-            postList.add(post);
+            PostDTO postDTO = this.setPostToPostDTO(post);
+            postList.add(postDTO);
         }
         return postList;
     }
 
-    public List<Post> findPostByKeyword(String keyword, String userid) {
+    public List<PostDTO> findPostByKeyword(String keyword, String userid) {
         Jedis jedis = RedisManager.getConnection();
         jedis.lpush(userid, keyword);
-        return postRepository.getPostByKeyword(keyword);
+        List<Post> posts = postRepository.getPostByKeyword(keyword);
+        List<PostDTO> postDTOs = new ArrayList<>();
+        for (Post post : posts) {
+            PostDTO postDTO = this.setPostToPostDTO(post);
+            postDTOs.add(postDTO);
+        }
+        return postDTOs;
     }
 
-    public List<Post> findPostByUserid(String userid) {
-        return postRepository.getPostByUserid(userid);
+    public List<PostDTO> findPostByUserid(String userid) {
+        List<Post> posts = postRepository.getPostByUserid(userid);
+        List<PostDTO> postDTOs = new ArrayList<>();
+        for (Post post : posts) {
+            PostDTO postDTO = this.setPostToPostDTO(post);
+            postDTOs.add(postDTO);
+        }
+        return postDTOs;
     }
 
     public String createPostinGroup(Post post, User user, List<Topic> topic, int groupid) {
@@ -194,8 +208,14 @@ public class PostService {
         return "Create Post Success";
     }
 
-    public List<Post> getPostinGroup(int groupid) {
-        return postRepository.getPostinGroup(groupid);
+    public List<PostDTO> getPostinGroup(int groupid) {
+        List<Post> posts = postRepository.getPostinGroup(groupid);
+        List<PostDTO> postDTOs = new ArrayList<>();
+        for (Post post : posts) {
+            PostDTO postDTO = this.setPostToPostDTO(post);
+            postDTOs.add(postDTO);
+        }
+        return postDTOs;
     }
 
     public int[] statisticPost(int year) {
@@ -228,5 +248,28 @@ public class PostService {
         int[] statistic = postCountByTopicId.values().stream().mapToInt(Integer::intValue).toArray();
 
         return statistic;
+    }
+
+    public List<PostDTO> findPostByFollowid(String userid) {
+        List<User> follows = followService.getallUserIdByFollower(userid);
+        List<PostDTO> postDTOs = new ArrayList<>();
+        for (User user : follows) {
+            List<Post> posts = postRepository.getPostByUserid(user.getUserid());
+            for (Post post : posts) {
+                PostDTO postDTO = this.setPostToPostDTO(post);
+                postDTOs.add(postDTO);
+            }
+        }
+        return postDTOs;
+    }
+
+    private PostDTO setPostToPostDTO(Post post) {
+        PostDTO postDTO = new PostDTO();
+        BeanUtils.copyProperties(post, postDTO);
+        postDTO.setTotallike(postLikeService.CountTotalLikeByPost(post.getPostid()));
+        postDTO.setTotaldislike(postLikeService.CountTotalDisLikeByPost(post.getPostid()));
+        postDTO.setListtopic(postTopicService.getPost_TopicbyPostid(post.getPostid()));
+        postDTO.setTotalcomment(commentService.totalCommentbyPostid(post.getPostid()));
+        return postDTO;
     }
 }
