@@ -46,6 +46,12 @@ public class User {
     @Column(name = "Bio")
     private String bio;
 
+    @Column(name = "Color")
+    private String color;
+
+    @Column(name = "Totalfollowing")
+    private Integer totalfollowing;
+
     @Column(name = "Createday")
     private LocalDateTime createday;
 

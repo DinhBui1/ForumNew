@@ -27,6 +27,8 @@ public class CommentService {
     private SimpMessagingTemplate simpMessagingTemplate;
     @Autowired
     private NoticeRepository noticeRepository;
+    @Autowired
+    private Comment_LikeService commentLikeService;
 
     public List<Comment> getAllComment(int limit, int pacing) {
         int offset = limit * (pacing - 1);
@@ -145,7 +147,16 @@ public class CommentService {
     }
 
     public List<Comment> getAllCommentByPostId(int postid) {
-        return commentRepository.getCommentByPostId(postid);
+        List<Comment> comments = commentRepository.getCommentByPostId(postid);
+        List<Comment> result = new ArrayList<>();
+        for (Comment c : comments) {
+            int totallike = commentLikeService.CountTotalLikeByComment(c.getCommentid());
+            int totaldislike = commentLikeService.CountTotalDisLikeByComment(c.getCommentid());
+            c.setTotallike(totallike);
+            c.setTotaldislike(totaldislike);
+            result.add(c);
+        }
+        return result;
 
     }
 

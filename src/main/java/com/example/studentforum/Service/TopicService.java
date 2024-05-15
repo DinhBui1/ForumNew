@@ -18,12 +18,14 @@ public class TopicService {
     @Autowired
     private UserRepository userRepository;
 
-    public String createTopic(String topicname) {
+    public String createTopic(String topicname, String image, String color) {
         Topic t = new Topic();
         t.setCreateday(LocalDateTime.now());
         t.setIsdelete(0);
         t.setIshide(0);
         t.setTopicname(topicname);
+        t.setImage(image);
+        t.setColor(color);
         topicRepository.save(t);
         return "Create Topic Success";
     }

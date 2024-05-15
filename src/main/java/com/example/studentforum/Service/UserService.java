@@ -79,6 +79,7 @@ public class UserService {
         u.setBio(user.getBio());
         u.setAddress(user.getAddress());
         u.setImage(user.getImage());
+        u.setColor(user.getColor());
         userRepository.updateaccount(u);
         return u;
     }

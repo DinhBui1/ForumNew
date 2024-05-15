@@ -37,6 +37,15 @@ public class Comment {
     @Column(name = "Content", columnDefinition = "LONGTEXT")
     private String content;
 
+    @Column(name = "Totallike")
+    private Integer totallike;
+
+    @Column(name = "Totaldislike")
+    private Integer totaldislike;
+
+    @Column(name = "Image", columnDefinition = "LONGTEXT")
+    private String image;
+
     @Column(name = "Createday")
     private LocalDateTime createday;
 

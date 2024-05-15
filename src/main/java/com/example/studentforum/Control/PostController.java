@@ -93,4 +93,8 @@ public class PostController {
         return postService.findPostByFollowid(userid);
     }
 
+    @QueryMapping
+    public List<PostDTO> find_post_by_listtopicid(@Argument("topicids") List<Integer> topicids) {
+        return postService.findPostByListTopicId(topicids);
+    }
 }

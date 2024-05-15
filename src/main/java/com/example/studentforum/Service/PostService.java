@@ -272,4 +272,26 @@ public class PostService {
         postDTO.setTotalcomment(commentService.totalCommentbyPostid(post.getPostid()));
         return postDTO;
     }
+
+    public List<PostDTO> findPostByListTopicId(List<Integer> topics) {
+        List<PostDTO> posts = new ArrayList<>();
+        for (Integer topic : topics) {
+            List<PostDTO> postdtos = this.findPostbyTopicid(topic);
+            if (posts.isEmpty()) {
+                posts.addAll(postdtos);
+            } else {
+                List<PostDTO> commonPosts = new ArrayList<>();
+                for (PostDTO p : posts) {
+                    for (PostDTO pdto : postdtos) {
+                        if (p.getPostid() == pdto.getPostid()) {
+                            commonPosts.add(pdto);
+                        }
+                    }
+                }
+                posts.clear();
+                posts.addAll(commonPosts);
+            }
+        }
+        return posts;
+    }
 }

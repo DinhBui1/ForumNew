@@ -20,6 +20,7 @@ type Query{
     find_post_by_topicid(topicid:Int):[PostDto],
     find_post_by_keyword(keyword:String, userid:String):[PostDto],
     find_post_in_group(groupid: Int):[PostDto],
+    find_post_by_listtopicid(topicids: [Int]):[PostDto],
 
     #    Comment
     comment(limit: Int, pacing: Int):[Comment],
@@ -269,6 +270,8 @@ type User{
     status:Int,
     isbanid:IsBan,
     mssv:String,
+    color:String,
+    totalfollowing:Int,
 }
 input UserRequest{
     userid:String,
@@ -287,6 +290,8 @@ input UserRequest{
     status:Int,
     isbanid:Int,
     mssv:String,
+    color:String,
+    totalfollowing:Int,
 }
 
 type Role{
@@ -306,6 +311,8 @@ type Topic{
     createday:LocalDateTime,
     ishide:Int,
     isdelete:Int,
+    image:String,
+    color:String,
 }
 input TopicRequest{
     topicid:Int,
@@ -382,6 +389,9 @@ type Comment{
     updateday:LocalDateTime,
     comment_comment:Comment,
     isdelete:Int,
+    totallike:Int,
+    totaldislike:Int,
+    image: String,
 }
 input CommentRequest{
     commentid:Int,

@@ -24,6 +24,10 @@ public class Topic {
     private int ishide;
     @Column(name = "Isdelete")
     private int isdelete;
+    @Column(name = "Image", columnDefinition = "LONGTEXT")
+    private String image;
+    @Column(name = "Color")
+    private String color;
 
     @OneToMany(mappedBy = "topic_posttopic", cascade = CascadeType.ALL)
     @JsonIgnore
@@ -80,6 +84,6 @@ public class Topic {
     public void setCreateday(LocalDateTime createday) {
         this.createday = createday;
     }
-    
+
 
 }

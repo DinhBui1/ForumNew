@@ -12,16 +12,19 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-public interface CommentRepository extends JpaRepository<Comment,Integer> {
+public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
     @Query("SELECT u FROM Comment u WHERE (u.commentid = ?1) ")
     Comment getCommentById(int Id);
-    @Query("SELECT u FROM Comment u WHERE (u.post_comment.postid = ?1 and u.comment_comment.commentid is null ) ")
+
+    @Query("SELECT u FROM Comment u WHERE (u.post_comment.postid = ?1) ")
     List<Comment> getCommentByPostId(int Id);
+
     @Query("SELECT u FROM Comment u WHERE (u.comment_comment.commentid = ?1 and u.post_comment.postid=?2) ")
-    List<Comment> getCommentByCommentParentId(int commentid,int postid);
+    List<Comment> getCommentByCommentParentId(int commentid, int postid);
+
     @Query(value = "SELECT * FROM Comment LIMIT :limit OFFSET :offset", nativeQuery = true)
-    List<Comment> getComment(@Param("limit") int limit,@Param("offset") int offset);
+    List<Comment> getComment(@Param("limit") int limit, @Param("offset") int offset);
 
     @Modifying
     @Transactional

@@ -16,8 +16,8 @@ public class TopicController {
     private TopicService topicService;
 
     @MutationMapping
-    public String create_topic(@Argument String topicname) {
-        return topicService.createTopic(topicname);
+    public String create_topic(@Argument String topicname, @Argument String image, @Argument String color) {
+        return topicService.createTopic(topicname, image, color);
     }
 
     @MutationMapping

@@ -55,4 +55,5 @@ public class Post_TopicService {
     public List<Post_Topic> getPost_TopicbyPostid(int postid) {
         return postTopicRepository.getPost_TopicByPostid(postid);
     }
+    
 }

@@ -20,10 +20,10 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     Post getPostById(int Id);
 
 
-    @Query("SELECT u FROM Post u WHERE YEAR(u.createday)=?1 and u.ishide=0")
+    @Query("SELECT u FROM Post u WHERE YEAR(u.createday)=?1 and u.ishide=0 ORDER BY u.postid DESC")
     List<Post> statisticPost(int year);
 
-    @Query("SELECT u FROM Post u")
+    @Query("SELECT u FROM Post u ORDER BY u.postid DESC")
     List<Post> getPost(Pageable pageable);
 
     @Query("SELECT u FROM Post u WHERE  LOWER(u.title) LIKE LOWER(CONCAT('%', :keyword, '%')) or LOWER(u.content) LIKE LOWER(CONCAT('%', :keyword, '%')) ORDER BY u.postid DESC")
