@@ -46,16 +46,16 @@ public class CommentService {
         return "Update Comment Success";
     }
 
-    public String createComment(Comment comment, String userid, int postid) {
+    public Comment createComment(Comment comment, String userid, int postid) {
         comment.setCreateday(LocalDateTime.now());
         User u = userRepository.getUserById(userid);
-        if (u.getIsban().getIsbanid() != 0) {
-            return "User has been exit ban list";
-        }
+//        if (u.getIsban().getIsbanid() != 0) {
+//            return "User has been exit ban list";
+//        }
         Post p = postRepository.getPostById(postid);
-        if (p.getRequiredreputation() > u.getReputation() && p.getUser_post().getUserid() != u.getUserid()) {
-            return "User isn't enought reputation to comment";
-        }
+//        if (p.getRequiredreputation() > u.getReputation() && p.getUser_post().getUserid() != u.getUserid()) {
+//            return "User isn't enought reputation to comment";
+//        }
         comment.setUser_comment(u);
         comment.setPost_comment(p);
         comment.setCreateday(LocalDateTime.now());
@@ -73,19 +73,19 @@ public class CommentService {
         }
 //        String destination = String.format("/notification/%s", p.getUser_post().getUserid());
 //        simpMessagingTemplate.convertAndSendToUser(p.getUser_post().getUserid(),destination,content);
-        return "Create Comment Success";
+        return comment;
     }
 
-    public String createCommentinComment(Comment comment, String userid, int comment_parentid) {
+    public Comment createCommentinComment(Comment comment, String userid, int comment_parentid) {
         User u = userRepository.getUserById(userid);
-        if (u.getIsban().getIsbanid() != 0) {
-            return "User has been exit ban list";
-        }
+//        if (u.getIsban().getIsbanid() != 0) {
+//            return "User has been exit ban list";
+//        }
         Comment cp = commentRepository.getCommentById(comment_parentid);
         Post p = checkCommentParent(cp);
-        if (p.getRequiredreputation() > u.getReputation() && p.getUser_post().getUserid() != u.getUserid()) {
-            return "User isn't enought reputation to comment";
-        }
+//        if (p.getRequiredreputation() > u.getReputation() && p.getUser_post().getUserid() != u.getUserid()) {
+//            return "User isn't enought reputation to comment";
+//        }
         comment.setUser_comment(u);
         comment.setComment_comment(cp);
         comment.setCreateday(LocalDateTime.now());
@@ -102,7 +102,7 @@ public class CommentService {
                 noticeRepository.updatenotice(n);
             }
         }
-        return "Create Comment in Comment Success";
+        return comment;
     }
 
     public Post checkCommentParent(Comment c) {

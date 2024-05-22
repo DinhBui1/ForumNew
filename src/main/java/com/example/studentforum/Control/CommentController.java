@@ -18,39 +18,42 @@ public class CommentController {
     private CommentService commentService;
 
     @QueryMapping
-    public List<Comment> comment(@Argument int limit, @Argument int pacing){
-        return commentService.getAllComment(limit,pacing);
+    public List<Comment> comment(@Argument int limit, @Argument int pacing) {
+        return commentService.getAllComment(limit, pacing);
     }
 
     @MutationMapping
-    public  String update_comment_by_pk(@Argument("comment") Comment comment){
+    public String update_comment_by_pk(@Argument("comment") Comment comment) {
         return commentService.updateCommentById(comment);
     }
 
     @MutationMapping
-    public String create_comment(@Argument("comment") Comment comment, @Argument("userid")String  userid, @Argument("postid")int postid){
-        return commentService.createComment(comment,userid,postid);
+    public Comment create_comment(@Argument("comment") Comment comment, @Argument("userid") String userid, @Argument("postid") int postid) {
+        return commentService.createComment(comment, userid, postid);
     }
 
     @MutationMapping
-    public  String create_comment_in_comment(@Argument("comment") Comment comment, @Argument("userid") String userid,@Argument("comment_parentid") int comment_parentid){
-        return commentService.createCommentinComment(comment,userid,comment_parentid);
+    public Comment create_comment_in_comment(@Argument("comment") Comment comment, @Argument("userid") String userid, @Argument("comment_parentid") int comment_parentid) {
+        return commentService.createCommentinComment(comment, userid, comment_parentid);
     }
+
     @MutationMapping
-    public String delete_comment_by_pk(@Argument int commentid){
+    public String delete_comment_by_pk(@Argument int commentid) {
         return commentService.deleteComment(commentid);
     }
 
     @QueryMapping
-    public List<Comment> find_all_comment_by_postid(@Argument int postid){
-        return  commentService.getAllCommentByPostId(postid);
+    public List<Comment> find_all_comment_by_postid(@Argument int postid) {
+        return commentService.getAllCommentByPostId(postid);
     }
+
     @QueryMapping
-    public List<Comment> find_all_comment_by_commentparentid(@Argument int commentparentid, @Argument int postid){
-        return  commentService.getAllCommentByCommentParentId(commentparentid,postid);
+    public List<Comment> find_all_comment_by_commentparentid(@Argument int commentparentid, @Argument int postid) {
+        return commentService.getAllCommentByCommentParentId(commentparentid, postid);
     }
+
     @QueryMapping
-    public int check_comment_in_comment(@Argument int commentid){
+    public int check_comment_in_comment(@Argument int commentid) {
         return commentService.checkCommentinComment(commentid);
     }
 

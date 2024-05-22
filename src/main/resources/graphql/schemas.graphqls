@@ -110,9 +110,9 @@ type Mutation {
 
     #    Comment
     update_comment_by_pk(comment: CommentRequest):String,
-    create_comment(comment: CommentRequest, userid:String,postid: Int):String,
+    create_comment(comment: CommentRequest, userid:String,postid: Int):Comment,
     delete_comment_by_pk(commentid: Int):String,
-    create_comment_in_comment(comment: CommentRequest, userid:String, comment_parentid:Int):String,
+    create_comment_in_comment(comment: CommentRequest, userid:String, comment_parentid:Int):Comment,
 
     #    PostLike
     create_icon_for_postlike(userid: String,postid: Int, iconid: Int):String,
