@@ -1,6 +1,8 @@
 package com.example.studentforum.Service;
 
 import com.example.studentforum.Authetication.JwtAuthenticationToken;
+import com.example.studentforum.DTO.ContentMessageDTO;
+import com.example.studentforum.DTO.TotalIcon;
 import com.example.studentforum.Model.*;
 import com.example.studentforum.Repository.*;
 import org.reactivestreams.Publisher;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -27,13 +30,16 @@ public class Content_MessageService {
     private DetailMessageRepository detailMessageRepository;
     @Autowired
     private IconRepository iconRepository;
+    @Autowired
+    private ContentMessage_IconRepository contentMessageIconRepository;
 
-    public String addContentMessage(String content, int messageid, String userid, int messageresponseid) {
+    public String addContentMessage(String content, String image, int messageid, String userid, int messageresponseid) {
         User u = userRepository.getUserById(userid);
         if (u == null) return "User not found";
         Message m = messageRepository.getMessagesByMessageid(messageid);
         Content_Message contentMessage = new Content_Message();
         contentMessage.setContent(content);
+        contentMessage.setImage(image);
         contentMessage.setMessage_content(m);
         contentMessage.setCreateday(LocalDateTime.now());
         contentMessage.setUser_content(u);
@@ -75,48 +81,91 @@ public class Content_MessageService {
         return contentMessageRepositpry.getContent_MessageByMessage_content(messageid);
     }
 
-    public Publisher<List<Content_Message>> getContent_MessagebyMessageidandUserid(int messageId) {
+    public Publisher<List<ContentMessageDTO>> getContent_MessagebyMessageidandUserid(int messageId, String userid) {
         try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String useridtoken = ((JwtAuthenticationToken) authentication).getUserid();
-            DetailMessage dm = detailMessageRepository.getDetailMessageByMessageid(messageId, useridtoken);
+            //Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            //String useridtoken = ((JwtAuthenticationToken) authentication).getUserid();
+            DetailMessage dm = detailMessageRepository.getDetailMessageByMessageid(messageId, userid);
             if (dm == null) throw new RuntimeException("You are not in this message");
             return subscriber -> Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> {
                 List<Content_Message> cgm = contentMessageRepositpry.findMessagesByUserIdOrderByLatestMessage(messageId);
-                subscriber.onNext(cgm);
+                List<ContentMessageDTO> listcontents = new ArrayList<>();
+                for (Content_Message cm : cgm) {
+                    ContentMessageDTO c = this.convertToContentMessageDTO(cm);
+                    listcontents.add(c);
+                }
+                subscriber.onNext(listcontents);
             }, 0, 2, TimeUnit.SECONDS);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
     }
 
-    public String createIconContentMessage(int contentid, int icon) {
-        Content_Message contentMessage = contentMessageRepositpry.getContent_MessageByContentid(contentid);
-        if (contentMessage == null) return "Content message not found";
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String useridtoken = ((JwtAuthenticationToken) authentication).getUserid();
-        if (!useridtoken.equals(contentMessage.getUser_content().getUserid())) {
-            return "You are not owner of this content message";
+//    public String createIconContentMessage(int contentid, int icon) {
+//        Content_Message contentMessage = contentMessageRepositpry.getContent_MessageByContentid(contentid);
+//        if (contentMessage == null) return "Content message not found";
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String useridtoken = ((JwtAuthenticationToken) authentication).getUserid();
+//        if (!useridtoken.equals(contentMessage.getUser_content().getUserid())) {
+//            return "You are not owner of this content message";
+//        }
+//        Content_Message cm = contentMessageRepositpry.getContent_MessageByContentidandIconid(contentid, icon);
+//        if (cm != null) {
+//            if (cm.getIcon_contentmessage().getIconid() == icon) {
+//                cm.setIcon_contentmessage(null);
+//                contentMessageRepositpry.save(cm);
+//                return "Delete icon content message success";
+//            } else {
+//                Icon i = iconRepository.getIconById(icon);
+//                contentMessage.setIcon_contentmessage(i);
+//                contentMessageRepositpry.save(contentMessage);
+//                return "Update icon content message success";
+//            }
+//        }
+//        Icon i = iconRepository.getIconById(icon);
+//        contentMessage.setIcon_contentmessage(i);
+//        contentMessage.setUpdateday(LocalDateTime.now());
+//        contentMessageRepositpry.save(contentMessage);
+//        return "Update icon content message success";
+//    }
+
+    public ContentMessageDTO convertToContentMessageDTO(Content_Message contentMessage) {
+        ContentMessageDTO contentMessageDTO = new ContentMessageDTO();
+        contentMessageDTO.setContentid(contentMessage.getContentid());
+        contentMessageDTO.setUserid(contentMessage.getUser_content().getUserid());
+        contentMessageDTO.setMessageid(contentMessage.getMessage_content().getMessageid());
+        if (contentMessage.getContentMessageResponse() != null) {
+            contentMessageDTO.setParentid(contentMessage.getContentMessageResponse().getContentid());
+        } else {
+            contentMessageDTO.setParentid(null);
         }
-        Content_Message cm = contentMessageRepositpry.getContent_MessageByContentidandIconid(contentid, icon);
-        if (cm != null) {
-            if (cm.getIcon_contentmessage().getIconid() == icon) {
-                cm.setIcon_contentmessage(null);
-                contentMessageRepositpry.save(cm);
-                return "Delete icon content message success";
+        contentMessageDTO.setContent(contentMessage.getContent());
+        contentMessageDTO.setCreateday(contentMessage.getCreateday());
+        contentMessageDTO.setUpdateday(contentMessage.getUpdateday());
+        contentMessageDTO.setImage(contentMessage.getImage());
+        List<ContentMessager_Icon> contentMessagerIcons = contentMessageIconRepository.getContentMessage_IconByContentMessageid(contentMessage.getContentid());
+        List<TotalIcon> totalIcons = new ArrayList<>();
+        for (ContentMessager_Icon cmi : contentMessagerIcons) {
+            TotalIcon ti = new TotalIcon();
+            if (totalIcons.size() == 0) {
+                ti.setIconid(cmi.getIcon_contentmessage().getIconid());
+                ti.setTotal(1);
+                totalIcons.add(ti);
             } else {
-                Icon i = iconRepository.getIconById(icon);
-                contentMessage.setIcon_contentmessage(i);
-                contentMessageRepositpry.save(contentMessage);
-                return "Update icon content message success";
+                for (TotalIcon t : totalIcons) {
+                    if (t.getIconid() == cmi.getIcon_contentmessage().getIconid()) {
+                        t.setTotal(t.getTotal() + 1);
+                        break;
+                    } else {
+                        ti.setIconid(cmi.getIcon_contentmessage().getIconid());
+                        ti.setTotal(1);
+                        totalIcons.add(ti);
+                        break;
+                    }
+                }
             }
         }
-        Icon i = iconRepository.getIconById(icon);
-        contentMessage.setIcon_contentmessage(i);
-        contentMessage.setUpdateday(LocalDateTime.now());
-        contentMessageRepositpry.save(contentMessage);
-        return "Update icon content message success";
+        contentMessageDTO.setTotalicon(totalIcons);
+        return contentMessageDTO;
     }
-    
-
 }

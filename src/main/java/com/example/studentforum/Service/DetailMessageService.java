@@ -1,14 +1,19 @@
 package com.example.studentforum.Service;
 
+import com.example.studentforum.Authetication.JwtAuthenticationToken;
 import com.example.studentforum.Model.DetailMessage;
 import com.example.studentforum.Model.Message;
 import com.example.studentforum.Model.User;
 import com.example.studentforum.Repository.DetailMessageRepository;
 import com.example.studentforum.Repository.MessageRepository;
 import com.example.studentforum.Repository.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +39,7 @@ public class DetailMessageService {
         detailMessage.setDetailmessage_message(m);
         detailMessage.setUser_detailmessage(u);
         detailMessage.setIsblock(0);
+        detailMessage.setLastseen(LocalDateTime.now());
         detailMessageRepository.save(detailMessage);
         return "Create detail message success";
     }
@@ -63,5 +69,17 @@ public class DetailMessageService {
             detailMessages.add(detailMessage1);
         }
         return detailMessages;
+    }
+
+    public String updateLastseen(int messageid) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String useridtoken = ((JwtAuthenticationToken) authentication).getUserid();
+        DetailMessage dm = detailMessageRepository.getDetailMessageByMessageidandUserid(messageid, useridtoken);
+        if (dm == null) {
+            return "Detail message isn't exit";
+        }
+        dm.setLastseen(LocalDateTime.now());
+        detailMessageRepository.save(dm);
+        return "Update last seen success";
     }
 }

@@ -27,5 +27,9 @@ public class DetailMessageController {
         return detailMessageService.getDetailMessageByUserid(userid);
     }
 
+    @MutationMapping
+    public String update_lastseen(@Argument int messageid) {
+        return detailMessageService.updateLastseen(messageid);
+    }
 
 }

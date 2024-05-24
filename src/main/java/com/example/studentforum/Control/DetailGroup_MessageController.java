@@ -35,4 +35,9 @@ public class DetailGroup_MessageController {
     public List<DetailGroup_Message> get_detailgroup_message_by_userid(@Argument String userid) {
         return detailGroup_messageService.getDetailGroup_MessageByUserid(userid);
     }
+
+    @MutationMapping
+    public String update_lastseen_group(@Argument int groupmessageid) {
+        return detailGroup_messageService.updateLastseenGroup(groupmessageid);
+    }
 }

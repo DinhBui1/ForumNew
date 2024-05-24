@@ -6,6 +6,7 @@ import jdk.jfr.Enabled;
 import lombok.Data;
 import lombok.Generated;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -28,5 +29,8 @@ public class DetailMessage {
 
     @Column(name = "Isblock")
     private int isblock;
-    
+
+    @Column(name = "Lastseen")
+    private LocalDateTime lastseen;
+
 }

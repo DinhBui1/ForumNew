@@ -26,7 +26,11 @@ public class Icon {
     @OneToMany(mappedBy = "icon_commentlike", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Comment_Like> listCommentlike;
-    
+
+    @OneToMany(mappedBy = "icon_contentmessage", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<ContentMessager_Icon> icon_contentmessage;
+
 
     @OneToMany(mappedBy = "icon_iconcontentgroupmessage", cascade = CascadeType.ALL)
     @JsonIgnore

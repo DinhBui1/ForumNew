@@ -1,5 +1,6 @@
 package com.example.studentforum.Service;
 
+import com.example.studentforum.Authetication.JwtAuthenticationToken;
 import com.example.studentforum.Model.DetailGroup_Message;
 import com.example.studentforum.Model.Group_Message;
 import com.example.studentforum.Model.User;
@@ -7,6 +8,8 @@ import com.example.studentforum.Repository.DetailGroup_MessageRepository;
 import com.example.studentforum.Repository.Group_MessageRepository;
 import com.example.studentforum.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -39,6 +42,7 @@ public class DetailGroup_MessageService {
             dgm.setDetailgroupmessage_groupmessage(gm);
             dgm.setUser_detailgroupmessage(u);
             dgm.setLevel(level);
+            dgm.setLastseen(LocalDateTime.now());
             dgm.setCreateday(LocalDateTime.now());
             detailGroup_MessageRepository.save(dgm);
             return "Create DetailGroup_Message Success";
@@ -90,5 +94,19 @@ public class DetailGroup_MessageService {
         }
     }
 
-
+    public String updateLastseenGroup(int groupmessageid) {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String useridtoken = ((JwtAuthenticationToken) authentication).getUserid();
+            DetailGroup_Message dgm = detailGroup_MessageRepository.getDetailGroup_MessageByMessageidandUserid(groupmessageid, useridtoken);
+            if (dgm == null) {
+                return "DetailGroup_Message Not Found";
+            }
+            dgm.setLastseen(LocalDateTime.now());
+            detailGroup_MessageRepository.save(dgm);
+            return "Update Lastseen DetailGroup_Message Success";
+        } catch (Exception e) {
+            return "Update Lastseen DetailGroup_Message Fail";
+        }
+    }
 }

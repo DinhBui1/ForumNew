@@ -35,4 +35,7 @@ public class Group_Message {
     @OneToMany(mappedBy = "groupmessage_content", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Content_GroupMessage> groupmessage_content;
+
+    @Column(name = "Parent")
+    private Integer parent;
 }

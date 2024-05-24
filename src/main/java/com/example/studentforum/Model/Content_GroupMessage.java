@@ -19,6 +19,9 @@ public class Content_GroupMessage {
     @Column(name = "Content")
     private String content;
 
+    @Column(name = "Image")
+    private String image;
+
     @Column(name = "Createday")
     private LocalDateTime createday;
 

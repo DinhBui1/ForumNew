@@ -1,6 +1,8 @@
 package com.example.studentforum.Control;
 
+import com.example.studentforum.DTO.ContentMessageDTO;
 import com.example.studentforum.Model.Content_Message;
+import com.example.studentforum.Service.ContentMessage_IconService;
 import com.example.studentforum.Service.Content_MessageService;
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +18,12 @@ import java.util.List;
 public class Content_MessageController {
     @Autowired
     private Content_MessageService contentMessageService;
+    @Autowired
+    private ContentMessage_IconService contentMessageIconService;
 
     @MutationMapping
-    public String create_content_message(@Argument String content, @Argument int messageid, @Argument String userid, @Argument int messageresponseid) {
-        return contentMessageService.addContentMessage(content, messageid, userid, messageresponseid);
+    public String create_content_message(@Argument String content, @Argument String image, @Argument int messageid, @Argument String userid, @Argument int messageresponseid) {
+        return contentMessageService.addContentMessage(content, image, messageid, userid, messageresponseid);
     }
 
     @MutationMapping
@@ -38,12 +42,12 @@ public class Content_MessageController {
     }
 
     @SubscriptionMapping
-    public Publisher<List<Content_Message>> sub_content_message_by_messageid(@Argument int messageid) {
-        return contentMessageService.getContent_MessagebyMessageidandUserid(messageid);
+    public Publisher<List<ContentMessageDTO>> sub_content_message_by_messageid(@Argument int messageid, @Argument String userid) {
+        return contentMessageService.getContent_MessagebyMessageidandUserid(messageid, userid);
     }
 
     @MutationMapping
     public String add_icon_to_content_message(@Argument int contentid, @Argument int iconid) {
-        return contentMessageService.createIconContentMessage(contentid, iconid);
+        return contentMessageIconService.createIconContentMessage(contentid, iconid);
     }
 }

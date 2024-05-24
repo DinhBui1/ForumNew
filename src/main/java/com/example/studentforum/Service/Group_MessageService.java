@@ -43,6 +43,9 @@ public class Group_MessageService {
             gm.setGroup_messageimage(group_message.getGroup_messageimage());
             gm.setGroup_messagedescription(group_message.getGroup_messagedescription());
             gm.setCreatedate(LocalDateTime.now());
+            if (group_message.getParent() != null) {
+                gm.setParent(group_message.getParent());
+            }
             group_messageRepository.save(gm);
 
             detailGroup_messageService.createDetailGroup_Message(gm.getGroup_messageid(), userid, 1);

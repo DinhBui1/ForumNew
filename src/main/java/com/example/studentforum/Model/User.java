@@ -91,6 +91,10 @@ public class User {
     @JsonIgnore
     private List<ContentGroupMessage_Icon> contentGroupMessage_icons;
 
+    @OneToMany(mappedBy = "user_iconcontentmessage", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<ContentMessager_Icon> contentMessage_icons;
+
     @OneToMany(mappedBy = "user_notice", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Notice> listNotice;

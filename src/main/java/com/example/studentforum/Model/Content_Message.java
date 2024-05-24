@@ -20,6 +20,9 @@ public class Content_Message {
     @Column(name = "Content")
     private String content;
 
+    @Column(name = "Image")
+    private String image;
+
     @Column(name = "Createday")
     private LocalDateTime createday;
 
@@ -42,7 +45,7 @@ public class Content_Message {
     @JsonIgnore
     private Content_Message contentMessageResponse;
 
-    @ManyToOne
-    @JoinColumn(name = "iconid", referencedColumnName = "iconid")
-    private Icon icon_contentmessage;
+    @OneToMany(mappedBy = "content_iconcontentmessage", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<ContentMessager_Icon> content_iconcontentmessage;
 }

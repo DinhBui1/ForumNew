@@ -23,7 +23,7 @@ public class MessageController {
     }
 
     @SubscriptionMapping
-    public Publisher<List<DetailMessage>> sub_detail_message_by_userid() {
-        return messageService.getMessagebyUserid();
+    public Publisher<List<DetailMessage>> sub_detail_message_by_userid(@Argument String userid) {
+        return messageService.getMessagebyUserid(userid);
     }
 }

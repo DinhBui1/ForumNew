@@ -1,5 +1,6 @@
 package com.example.studentforum.Control;
 
+import com.example.studentforum.DTO.ContentMessageDTO;
 import com.example.studentforum.Model.Content_GroupMessage;
 import com.example.studentforum.Service.Content_GroupMessageService;
 import graphql.kickstart.execution.subscriptions.SubscriptionException;
@@ -19,8 +20,8 @@ public class Content_GroupMessageController {
     private Content_GroupMessageService content_groupMessageService;
 
     @MutationMapping
-    public String create_content_groupmessage(@Argument String content, @Argument int groupmessageId, @Argument String userId, @Argument int messageresponseid) {
-        return content_groupMessageService.createContent_GroupMessage(content, groupmessageId, userId, messageresponseid);
+    public String create_content_groupmessage(@Argument String content, @Argument String image, @Argument int groupmessageId, @Argument String userId, @Argument int messageresponseid) {
+        return content_groupMessageService.createContent_GroupMessage(content, image, groupmessageId, userId, messageresponseid);
     }
 
     @MutationMapping
@@ -39,8 +40,8 @@ public class Content_GroupMessageController {
     }
 
     @SubscriptionMapping
-    public Publisher<List<Content_GroupMessage>> sub_contentgroup_message_by_userid(@Argument int groupmessageId) throws SubscriptionException {
-        return content_groupMessageService.getContent_GroupMessagebyGroupmessageidandUseridNotoken(groupmessageId);
+    public Publisher<List<ContentMessageDTO>> sub_contentgroup_message_by_userid(@Argument int groupmessageId, @Argument String userId) throws SubscriptionException {
+        return content_groupMessageService.getContent_GroupMessagebyGroupmessageidandUseridNotoken(groupmessageId, userId);
     }
 
 }

@@ -162,10 +162,11 @@ type Mutation {
     create_message(userid1:String, userid2:String):String,
 
     #    DetailMessage
+    update_lastseen(messageid: Int):String,
     block_message(messageid:Int, userid:String, isblock:Int):String,
 
     #    Content_Message
-    create_content_message(content: String, messageid: Int, userid: String, messageresponseid: Int):String,
+    create_content_message(content: String, image: String, messageid: Int, userid: String, messageresponseid: Int):String,
     update_content_message(content: String, contentid: Int):String,
     delete_content_message(contentid: Int):String,
     add_icon_to_content_message( contentid: Int, iconid: Int):String,
@@ -179,9 +180,10 @@ type Mutation {
     join_group_message(groupmessageid: Int, userid:String, level: Int):String,
     update_level_detailgroup_message(groupmessageid: Int, userid:String, level: Int):String,
     leave_group_message(groupmessageid: Int, userid:String):String,
+    update_lastseen_group(groupmessageid: Int):String,
 
     #   Content_GroupMessage
-    create_content_groupmessage(content: String, groupmessageId: Int, userId: String, messageresponseid: Int):String,
+    create_content_groupmessage(content: String, image: String, groupmessageId: Int, userId: String, messageresponseid: Int):String,
     update_content_groupmessage(content: String, contentId: Int):String,
     delete_content_groupmessage(contentId: Int):String,
 
@@ -193,9 +195,9 @@ type Subscription{
     sub_all_notice_by_userid(userid: String):[Notice],
     sub_status_user(userid:String):User,
     sub_group_message_by_userid:[Group_Message],
-    sub_contentgroup_message_by_userid(groupmessageId: Int):[Content_GroupMessage],
-    sub_content_message_by_messageid(messageid:Int):[Content_Message],
-    sub_detail_message_by_userid:[DetailMessage],
+    sub_contentgroup_message_by_userid(groupmessageId: Int, userid:String):[ContentMessageDTO],
+    sub_content_message_by_messageid(messageid:Int, userid:String):[ContentMessageDTO],
+    sub_detail_message_by_userid(userid:String):[DetailMessage],
 }
 type Bookmark {
     bookmarkid : Int!,
@@ -379,6 +381,23 @@ type Content_Message {
     user_content: User
     contentMessageResponse: Content_Message,
     icon_contentmessage: Icon,
+}
+
+type ContentMessageDTO {
+    contentid: Int,
+    content: String,
+    createday: LocalDateTime,
+    updateday: LocalDateTime,
+    parentid: Int,
+    userid: String,
+    messageid: Int,
+    totalicon: [TotalIcon],
+    image: String,
+}
+
+type TotalIcon{
+    iconid:Int,
+    total: Int,
 }
 type Comment{
     commentid:Int!,

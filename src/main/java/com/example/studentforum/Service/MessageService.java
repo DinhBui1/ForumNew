@@ -50,15 +50,15 @@ public class MessageService {
         return "Create message success";
     }
 
-    public Publisher<List<DetailMessage>> getMessagebyUserid() {
+    public Publisher<List<DetailMessage>> getMessagebyUserid(String userid) {
         try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String useridtoken = ((JwtAuthenticationToken) authentication).getUserid();
+//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//            String useridtoken = ((JwtAuthenticationToken) authentication).getUserid();
             return subscriber -> Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> {
-                List<DetailMessage> messages = detailMessageRepository.findDetailMessagesByUserIdOrderByLatestMessage(useridtoken);
+                List<DetailMessage> messages = detailMessageRepository.findDetailMessagesByUserIdOrderByLatestMessage(userid);
                 List<DetailMessage> detailMessages = new ArrayList<>();
                 for (DetailMessage detailMessage : messages) {
-                    DetailMessage detailMessage1 = detailMessageRepository.getDetailMessageByMessageid(detailMessage.getDetailmessage_message().getMessageid(), useridtoken);
+                    DetailMessage detailMessage1 = detailMessageRepository.getDetailMessageByMessageid(detailMessage.getDetailmessage_message().getMessageid(), userid);
                     detailMessages.add(detailMessage1);
                 }
                 subscriber.onNext(detailMessages);
