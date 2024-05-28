@@ -38,7 +38,7 @@ public class Group_MessageController {
     }
 
     @SubscriptionMapping
-    public Publisher<List<Group_Message>> sub_group_message_by_userid() {
-        return group_messageService.getGroup_MessagebyUserid();
+    public Publisher<List<Group_Message>> sub_group_message_by_userid(@Argument String userid) {
+        return group_messageService.getGroup_MessagebyUserid(userid);
     }
 }

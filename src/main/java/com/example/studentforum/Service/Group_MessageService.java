@@ -112,12 +112,12 @@ public class Group_MessageService {
         return group_messageRepository.getGroup_MessageByKeyword(keyword);
     }
 
-    public Publisher<List<Group_Message>> getGroup_MessagebyUserid() {
+    public Publisher<List<Group_Message>> getGroup_MessagebyUserid(String userid) {
         try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String useridtoken = ((JwtAuthenticationToken) authentication).getUserid();
+//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//            String useridtoken = ((JwtAuthenticationToken) authentication).getUserid();
             return subscriber -> Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> {
-                List<Group_Message> gm = group_messageRepository.findGroupMessagesByUserIdOrderByLatestMessage(useridtoken);
+                List<Group_Message> gm = group_messageRepository.findGroupMessagesByUserIdOrderByLatestMessage(userid);
                 subscriber.onNext(gm);
 
             }, 0, 1, TimeUnit.SECONDS);

@@ -31,23 +31,23 @@ public class MessageService {
     @Autowired
     private DetailMessageRepository detailMessageRepository;
 
-    public String createMessage(String userid1, String userid2) {
+    public Message createMessage(String userid1, String userid2) {
         User u1 = userRepository.getUserById(userid1);
         User u2 = userRepository.getUserById(userid2);
-        Message messages = messageRepository.getMessagesByMessagename(u1.getMssv() + "_" + u2.getMssv());
-        if (messages != null) {
-            return "Message is exit";
-        }
-        if (u1 == null || u2 == null) {
-            return "User isn't exit";
-        }
+//        Message messages = messageRepository.getMessagesByMessagename(u1.getMssv() + "_" + u2.getMssv());
+//        if (messages != null) {
+//            return "Message is exit";
+//        }
+//        if (u1 == null || u2 == null) {
+//            return "User isn't exit";
+//        }
         Message m = new Message();
         m.setMessagename(u1.getMssv() + "_" + u2.getMssv());
         m.setCreateday(LocalDateTime.now());
         messageRepository.save(m);
         detailMessageService.createDetailMessage(m.getMessageid(), u1.getUserid());
         detailMessageService.createDetailMessage(m.getMessageid(), u2.getUserid());
-        return "Create message success";
+        return m;
     }
 
     public Publisher<List<DetailMessage>> getMessagebyUserid(String userid) {

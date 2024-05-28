@@ -18,7 +18,7 @@ public class MessageController {
     private MessageService messageService;
 
     @MutationMapping
-    public String create_message(@Argument String userid1, @Argument String userid2) {
+    public Message create_message(@Argument String userid1, @Argument String userid2) {
         return messageService.createMessage(userid1, userid2);
     }
 

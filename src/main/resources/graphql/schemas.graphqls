@@ -159,7 +159,7 @@ type Mutation {
     update_check(userid: String, groupid: Int, check:Int):String,
 
     #    Message
-    create_message(userid1:String, userid2:String):String,
+    create_message(userid1:String, userid2:String):Message,
 
     #    DetailMessage
     update_lastseen(messageid: Int):String,
@@ -194,7 +194,7 @@ type Mutation {
 type Subscription{
     sub_all_notice_by_userid(userid: String):[Notice],
     sub_status_user(userid:String):User,
-    sub_group_message_by_userid:[Group_Message],
+    sub_group_message_by_userid(userid:String):[Group_Message],
     sub_contentgroup_message_by_userid(groupmessageId: Int, userid:String):[ContentMessageDTO],
     sub_content_message_by_messageid(messageid:Int, userid:String):[ContentMessageDTO],
     sub_detail_message_by_userid(userid:String):[DetailMessage],
