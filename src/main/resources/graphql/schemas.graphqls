@@ -149,7 +149,7 @@ type Mutation {
     delete_topic(topicid:Int):String,
 
     #   Group
-    create_group(group:GroupRequest,admin:String):String,
+    create_group(group:GroupRequest,admin:String):GroupDTO,
     update_group(group:GroupRequest):String,
     delete_group(groupid:Int):String,
 
@@ -254,6 +254,17 @@ input  PostRequest {
     totalread:Int,
     requiredreputation:Int,
     group_post:Int,
+}
+type GroupDTO {
+    groupid: Int,
+    groupname: String,
+    image:String,
+    createday: LocalDateTime,
+    reputation: Int,
+    admin: String,
+    description:String,
+    chanel: Int,
+    totaluser: Int,
 }
 type User{
     userid:String!,
@@ -525,8 +536,6 @@ input GroupRequest{
     groupid:Int,
     groupname:String,
     image:String,
-    createday:LocalDateTime,
-    user_group:String,
     reputaion:Int,
     description:String,
 }

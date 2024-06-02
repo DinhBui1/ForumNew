@@ -1,5 +1,6 @@
 package com.example.studentforum.Control;
 
+import com.example.studentforum.DTO.GroupDTO;
 import com.example.studentforum.Model.Group;
 import com.example.studentforum.Service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ public class GroupController {
     private GroupService groupService;
 
     @MutationMapping
-    public String create_group(@Argument Group group, @Argument String admin) {
+    public GroupDTO create_group(@Argument Group group, @Argument String admin) {
         return groupService.createGroup(group, admin);
     }
 

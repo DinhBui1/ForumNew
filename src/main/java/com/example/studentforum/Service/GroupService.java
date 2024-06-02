@@ -1,6 +1,7 @@
 package com.example.studentforum.Service;
 
 import com.example.studentforum.Config.RedisManager;
+import com.example.studentforum.DTO.GroupDTO;
 import com.example.studentforum.Model.Group;
 import com.example.studentforum.Model.Notice;
 import com.example.studentforum.Model.User;
@@ -29,17 +30,15 @@ public class GroupService {
     @Autowired
     private NoticeService noticeService;
 
-    public String createGroup(Group g, String admin) {
+    public GroupDTO createGroup(Group g, String admin) {
         User u = userRepository.getUserById(admin);
-        if (u == null) {
-            return "User Not Exit";
-        }
         g.setUser_group(u);
         g.setCreateday(LocalDateTime.now());
         groupRepository.save(g);
+        GroupDTO groupDTO = groupToGroupDTO(g);
         String content = "Bạn đã tạo thành công nhóm : <b>" + g.getGroupname() + "</b>";
         Notice n = noticeService.createNotice(u.getUserid(), content, 10, 0);
-        return "Create Group Success";
+        return groupDTO;
     }
 
     public String updateGroup(Group g) {
@@ -93,6 +92,20 @@ public class GroupService {
     public Group getGroupbyGroupid(int groupid) {
         Group g = groupRepository.getGroupByGroupId(groupid);
         return groupRepository.getGroupByGroupId(groupid);
+    }
+
+    private GroupDTO groupToGroupDTO(Group g) {
+        GroupDTO groupDTO = new GroupDTO();
+        groupDTO.setGroupid(g.getGroupid());
+        groupDTO.setGroupname(g.getGroupname());
+        groupDTO.setImage(g.getImage());
+        groupDTO.setCreateday(g.getCreateday());
+        groupDTO.setReputation(g.getReputation());
+        groupDTO.setAdmin(g.getUser_group().getUserid());
+        groupDTO.setDescription(g.getDescription());
+        groupDTO.setChanel(g.getChanel());
+        groupDTO.setTotaluser(1 + userGroupService.getUserinGroupNopacing(g.getGroupid()).size());
+        return groupDTO;
     }
 
 
