@@ -52,8 +52,6 @@ public class MessageService {
 
     public Publisher<List<DetailMessage>> getMessagebyUserid(String userid) {
         try {
-//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//            String useridtoken = ((JwtAuthenticationToken) authentication).getUserid();
             return subscriber -> Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> {
                 List<DetailMessage> messages = detailMessageRepository.findDetailMessagesByUserIdOrderByLatestMessage(userid);
                 List<DetailMessage> detailMessages = new ArrayList<>();
