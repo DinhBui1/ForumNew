@@ -43,6 +43,8 @@ public class PostService {
     private Post_LikeService postLikeService;
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private GenminiService genminiService;
 
     public List<PostDTO> getallPost(int limit, int pacing) {
 
@@ -65,6 +67,22 @@ public class PostService {
         }
         if (p == null) {
             return "Post Not Exit";
+        }
+        String checkPostTitle = genminiService.callApi(post.getTitle());
+        if (checkPostTitle.contains("yes")) {
+            String parts = checkPostTitle.split("\\[")[1].split("]")[0];
+            p.setWarning("1");
+            p.setWarningword(parts);
+        } else {
+            String checkPostContent = genminiService.callApi(post.getContent());
+            if (checkPostContent.contains("yes")) {
+                String parts = checkPostContent.split("\\[")[1].split("]")[0];
+                p.setWarning("1");
+                p.setWarningword(parts);
+            } else {
+                p.setWarning("0");
+                p.setWarningword(null);
+            }
         }
         List<Post_Topic> postTopics = postTopicRepository.getPost_TopicByPostid(p.getPostid());
         for (Post_Topic postTopic : postTopics) {
@@ -114,6 +132,22 @@ public class PostService {
         post.setIshide(0);
         post.setCreateday(LocalDateTime.now());
         post.setTotalread(0);
+        String checkPostTitle = genminiService.callApi(post.getTitle());
+        if (checkPostTitle.contains("yes")) {
+            String parts = checkPostTitle.split("\\[")[1].split("]")[0];
+            post.setWarning("1");
+            post.setWarningword(parts);
+        } else {
+            String checkPostContent = genminiService.callApi(post.getContent());
+            if (checkPostContent.contains("yes")) {
+                String parts = checkPostContent.split("\\[")[1].split("]")[0];
+                post.setWarning("1");
+                post.setWarningword(parts);
+            } else {
+                post.setWarning("0");
+                post.setWarningword(null);
+            }
+        }
         Post savedPost = postRepository.save(post);
 
         if (topic != null) {
@@ -190,6 +224,22 @@ public class PostService {
         Group g = groupRepository.getGroupByGroupId(groupid);
         if (u.getIsban().getIsbanid() != 0) {
             return "User has been exit ban list";
+        }
+        String checkPostTitle = genminiService.callApi(post.getTitle());
+        if (checkPostTitle.contains("yes")) {
+            String parts = checkPostTitle.split("\\[")[1].split("]")[0];
+            post.setWarning("1");
+            post.setWarningword(parts);
+        } else {
+            String checkPostContent = genminiService.callApi(post.getContent());
+            if (checkPostContent.contains("yes")) {
+                String parts = checkPostContent.split("\\[")[1].split("]")[0];
+                post.setWarning("1");
+                post.setWarningword(parts);
+            } else {
+                post.setWarning("0");
+                post.setWarningword(null);
+            }
         }
         post.setUser_post(u);
         post.setIshide(0);

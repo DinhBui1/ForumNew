@@ -52,6 +52,12 @@ public class Comment {
     @Column(name = "Updateday")
     private LocalDateTime updateday;
 
+    @Column(name = "Warning")
+    private String warning;
+
+    @Column(name = "Warningword")
+    private String warningword;
+
     @OneToMany(mappedBy = "comment_commentlike", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Comment_Like> listCommentlike;

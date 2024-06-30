@@ -2,6 +2,7 @@ package com.example.studentforum.Service;
 
 import com.example.studentforum.Model.*;
 import com.example.studentforum.Repository.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,8 @@ public class CommentService {
     private NoticeRepository noticeRepository;
     @Autowired
     private Comment_LikeService commentLikeService;
+    @Autowired
+    private GenminiService genminiService;
 
     public List<Comment> getAllComment(int limit, int pacing) {
         int offset = limit * (pacing - 1);
@@ -39,6 +42,16 @@ public class CommentService {
         Comment c = commentRepository.getCommentById(comment.getCommentid());
         if (c.getUser_comment().getIsban().getIsbanid() != 0) {
             return "User has been exit ban list";
+        }
+
+        String checkComment = genminiService.callApi(comment.getContent());
+        if (checkComment.contains("yes")) {
+            String parts = checkComment.split("\\[")[1].split("]")[0];
+            c.setWarning("1");
+            c.setWarningword(parts);
+        } else {
+            c.setWarning("0");
+            c.setWarningword(null);
         }
         c.setContent(comment.getContent());
         c.setUpdateday(LocalDateTime.now());
@@ -56,6 +69,15 @@ public class CommentService {
 //        if (p.getRequiredreputation() > u.getReputation() && p.getUser_post().getUserid() != u.getUserid()) {
 //            return "User isn't enought reputation to comment";
 //        }
+        String checkComment = genminiService.callApi(comment.getContent());
+        if (checkComment.contains("yes")) {
+            String parts = checkComment.split("\\[")[1].split("]")[0];
+            comment.setWarning("1");
+            comment.setWarningword(parts);
+        } else {
+            comment.setWarning("0");
+            comment.setWarningword(null);
+        }
         comment.setUser_comment(u);
         comment.setPost_comment(p);
         comment.setCreateday(LocalDateTime.now());
@@ -86,6 +108,15 @@ public class CommentService {
 //        if (p.getRequiredreputation() > u.getReputation() && p.getUser_post().getUserid() != u.getUserid()) {
 //            return "User isn't enought reputation to comment";
 //        }
+        String checkComment = genminiService.callApi(comment.getContent());
+        if (checkComment.contains("yes")) {
+            String parts = checkComment.split("\\[")[1].split("]")[0];
+            comment.setWarning("1");
+            comment.setWarningword(parts);
+        } else {
+            comment.setWarning("0");
+            comment.setWarningword(null);
+        }
         comment.setUser_comment(u);
         comment.setComment_comment(cp);
         comment.setCreateday(LocalDateTime.now());

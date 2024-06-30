@@ -223,6 +223,8 @@ type  Post {
     requiredreputation:Int,
     totalread:Int,
     group_post:Group,
+    warning: String,
+    warningword: String,
 }
 type  PostDto {
     postid:Int!,
@@ -240,6 +242,8 @@ type  PostDto {
     totaldislike:Int,
     totalcomment:Int,
     listtopic:[Post_Topic],
+    warning: String,
+    warningword: String,
 }
 input  PostRequest {
     postid:Int
@@ -422,6 +426,8 @@ type Comment{
     totallike:Int,
     totaldislike:Int,
     image: String,
+    warning: String,
+    warningword: String,
 }
 input CommentRequest{
     commentid:Int,

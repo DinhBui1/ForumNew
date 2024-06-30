@@ -43,4 +43,8 @@ public class PostDTO {
     private int totalcomment;
 
     private List<Post_Topic> listtopic;
+
+    private String warning;
+
+    private String warningword;
 }

@@ -37,7 +37,7 @@ public class Post {
     private int requiredreputation;
     @Column(name = "Ishide")
     private int ishide;
-    
+
     @ManyToOne
     @JoinColumn(name = "groupid", referencedColumnName = "groupid")
     private Group group_post;
@@ -64,6 +64,12 @@ public class Post {
     @OneToMany(mappedBy = "post_view", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<ViewPost> listViewPost;
+
+    @Column(name = "Warning")
+    private String warning;
+
+    @Column(name = "Warningword")
+    private String warningword;
 
     public Post(int postid, User user_post, String content, LocalDateTime createday, int ishide) {
         this.postid = postid;
