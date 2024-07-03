@@ -197,7 +197,7 @@ type Subscription{
     sub_group_message_by_userid(userid:String):[Group_Message],
     sub_contentgroup_message_by_userid(groupmessageId: Int, userid:String):[ContentMessageDTO],
     sub_content_message_by_messageid(messageid:Int, userid:String):[ContentMessageDTO],
-    sub_detail_message_by_userid(userid:String):[DetailMessage],
+    sub_detail_message_by_userid(userid:String):[DetailMessageDTO],
 }
 type Bookmark {
     bookmarkid : Int!,
@@ -386,6 +386,15 @@ type DetailMessage {
     detailmessage_message: Message,
     user_detailmessage: User,
     isblock: Int,
+    lastseen: LocalDateTime,
+}
+type DetailMessageDTO {
+    detailmessageid: Int!,
+    detailmessage_message: Message,
+    user_detailmessage: User,
+    isblock: Int,
+    lastseen: LocalDateTime,
+    lastsend: LocalDateTime,
 }
 type Content_Message {
     contentid: Int!,

@@ -1,5 +1,6 @@
 package com.example.studentforum.Control;
 
+import com.example.studentforum.DTO.DetailMessageDTO;
 import com.example.studentforum.Model.DetailMessage;
 import com.example.studentforum.Model.Message;
 import com.example.studentforum.Service.MessageService;
@@ -23,7 +24,7 @@ public class MessageController {
     }
 
     @SubscriptionMapping
-    public Publisher<List<DetailMessage>> sub_detail_message_by_userid(@Argument String userid) {
+    public Publisher<List<DetailMessageDTO>> sub_detail_message_by_userid(@Argument String userid) {
         return messageService.getMessagebyUserid(userid);
     }
 }

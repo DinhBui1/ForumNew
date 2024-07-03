@@ -1,10 +1,9 @@
 package com.example.studentforum.Service;
 
 import com.example.studentforum.Authetication.JwtAuthenticationToken;
-import com.example.studentforum.Model.DetailMessage;
-import com.example.studentforum.Model.Group_Message;
-import com.example.studentforum.Model.Message;
-import com.example.studentforum.Model.User;
+import com.example.studentforum.DTO.DetailMessageDTO;
+import com.example.studentforum.Model.*;
+import com.example.studentforum.Repository.Content_MessageRepositpry;
 import com.example.studentforum.Repository.DetailMessageRepository;
 import com.example.studentforum.Repository.MessageRepository;
 import com.example.studentforum.Repository.UserRepository;
@@ -30,6 +29,8 @@ public class MessageService {
     private DetailMessageService detailMessageService;
     @Autowired
     private DetailMessageRepository detailMessageRepository;
+    @Autowired
+    private Content_MessageRepositpry contentMessageRepositpry;
 
     public Message createMessage(String userid1, String userid2) {
         User u1 = userRepository.getUserById(userid1);
@@ -50,14 +51,25 @@ public class MessageService {
         return m;
     }
 
-    public Publisher<List<DetailMessage>> getMessagebyUserid(String userid) {
+    public Publisher<List<DetailMessageDTO>> getMessagebyUserid(String userid) {
         try {
             return subscriber -> Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> {
                 List<DetailMessage> messages = detailMessageRepository.findDetailMessagesByUserIdOrderByLatestMessage(userid);
-                List<DetailMessage> detailMessages = new ArrayList<>();
+                List<DetailMessageDTO> detailMessages = new ArrayList<>();
                 for (DetailMessage detailMessage : messages) {
                     DetailMessage detailMessage1 = detailMessageRepository.getDetailMessageByMessageid(detailMessage.getDetailmessage_message().getMessageid(), userid);
-                    detailMessages.add(detailMessage1);
+
+                    DetailMessageDTO detailMessageDTO = new DetailMessageDTO();
+                    detailMessageDTO.setDetailmessageid(detailMessage1.getDetailmessageid());
+                    detailMessageDTO.setMessageid(detailMessage1.getDetailmessage_message().getMessageid());
+                    detailMessageDTO.setUserid(detailMessage1.getUser_detailmessage().getUserid());
+                    detailMessageDTO.setIsblock(detailMessage1.getIsblock());
+                    detailMessageDTO.setLastseen(detailMessage1.getLastseen());
+                    Content_Message contentMessage = contentMessageRepositpry.getContent_MessageNewByMessage_content(detailMessage1.getDetailmessage_message().getMessageid());
+                    if (contentMessage != null) {
+                        detailMessageDTO.setLastsend(contentMessage.getCreateday());
+                    }
+                    detailMessages.add(detailMessageDTO);
                 }
                 subscriber.onNext(detailMessages);
             }, 0, 2, TimeUnit.SECONDS);

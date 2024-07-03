@@ -22,8 +22,8 @@ public interface DetailMessageRepository extends JpaRepository<DetailMessage, In
     DetailMessage getDetailMessageByMessageid(int messageid, String userid);
 
     @Query("SELECT  gm FROM DetailMessage gm " +
-            "INNER JOIN Content_Message c ON gm.detailmessage_message.messageid = c.message_content.messageid " +
+            "LEFT JOIN Content_Message c ON gm.detailmessage_message.messageid = c.message_content.messageid " +
             "WHERE gm.user_detailmessage.userid = :userId " +
-            "ORDER BY c.createday DESC LIMIT 5")
+            "ORDER BY c.createday DESC")
     List<DetailMessage> findDetailMessagesByUserIdOrderByLatestMessage(@Param("userId") String userId);
 }

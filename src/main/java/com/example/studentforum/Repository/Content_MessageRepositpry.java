@@ -17,6 +17,9 @@ public interface Content_MessageRepositpry extends JpaRepository<Content_Message
     @Query("select c from Content_Message c where c.message_content.messageid = ?1")
     List<Content_Message> getContent_MessageByMessage_content(int messageid);
 
+    @Query("select c from Content_Message c where c.message_content.messageid = ?1 order by c.createday desc limit 1")
+    Content_Message getContent_MessageNewByMessage_content(int messageid);
+
     @Query("SELECT cgm FROM Content_Message cgm " +
             "WHERE cgm.message_content.messageid = :messageId  " +
             "ORDER BY cgm.createday DESC LIMIT 20")
