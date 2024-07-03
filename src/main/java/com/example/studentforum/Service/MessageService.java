@@ -62,7 +62,7 @@ public class MessageService {
                     DetailMessageDTO detailMessageDTO = new DetailMessageDTO();
                     detailMessageDTO.setDetailmessageid(detailMessage1.getDetailmessageid());
                     detailMessageDTO.setMessageid(detailMessage1.getDetailmessage_message().getMessageid());
-                    detailMessageDTO.setUserid(detailMessage1.getUser_detailmessage().getUserid());
+                    detailMessageDTO.setUserid(detailMessage1.getUser_detailmessage());
                     detailMessageDTO.setIsblock(detailMessage1.getIsblock());
                     detailMessageDTO.setLastseen(detailMessage1.getLastseen());
                     Content_Message contentMessage = contentMessageRepositpry.getContent_MessageNewByMessage_content(detailMessage1.getDetailmessage_message().getMessageid());

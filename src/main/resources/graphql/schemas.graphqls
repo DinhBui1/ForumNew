@@ -391,7 +391,7 @@ type DetailMessage {
 type DetailMessageDTO {
     detailmessageid: Int!,
     messageid: Int,
-    userid: String,
+    userid: User,
     isblock: Int,
     lastseen: LocalDateTime,
     lastsend: LocalDateTime,

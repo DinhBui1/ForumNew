@@ -1,6 +1,7 @@
 package com.example.studentforum.DTO;
 
 import com.example.studentforum.Model.Message;
+import com.example.studentforum.Model.User;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -12,7 +13,7 @@ public class DetailMessageDTO {
 
     private Integer messageid;
 
-    private String userid;
+    private User userid;
 
     private int isblock;
 
