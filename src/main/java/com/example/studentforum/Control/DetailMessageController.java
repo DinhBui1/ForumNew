@@ -27,6 +27,11 @@ public class DetailMessageController {
         return detailMessageService.getDetailMessageByUserid(userid);
     }
 
+    @QueryMapping
+    public boolean check_detail_message(@Argument String userid1, @Argument String userid2) {
+        return detailMessageService.checkDetailMessage(userid1, userid2);
+    }
+
     @MutationMapping
     public String update_lastseen(@Argument int messageid) {
         return detailMessageService.updateLastseen(messageid);

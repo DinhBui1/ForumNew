@@ -30,7 +30,7 @@ public interface Group_MessageRepository extends JpaRepository<Group_Message, In
             "INNER JOIN Content_GroupMessage c ON gm.group_messageid = c.groupmessage_content.group_messageid " +
             "INNER JOIN DetailGroup_Message d ON gm.group_messageid = d.detailgroupmessage_groupmessage.group_messageid " +
             "WHERE d.user_detailgroupmessage.userid = :userId " +
-            "ORDER BY c.createday DESC LIMIT 5")
+            "ORDER BY c.createday DESC")
     List<Group_Message> findGroupMessagesByUserIdOrderByLatestMessage(@Param("userId") String userId);
 
 }

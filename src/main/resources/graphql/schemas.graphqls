@@ -78,6 +78,7 @@ type Query{
     get_content_message_by_messageid(messageid:Int):[Content_Message],
 
     #   DetailMessage
+    check_detail_message(userid1:String, userid2:String):Boolean,
     get_detail_message_by_userid(userid:String):[DetailMessage],
 
     #   Group_Message

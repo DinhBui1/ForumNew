@@ -71,6 +71,19 @@ public class DetailMessageService {
         return detailMessages;
     }
 
+    public boolean checkDetailMessage(String userid1, String userid2) {
+        List<DetailMessage> detailMessage1 = detailMessageRepository.getDetailMessageByUserid(userid1);
+        List<DetailMessage> detailMessage2 = detailMessageRepository.getDetailMessageByUserid(userid2);
+        for (DetailMessage message1 : detailMessage1) {
+            for (DetailMessage message2 : detailMessage2) {
+                if (message1.getDetailmessage_message().getMessageid() == message2.getDetailmessage_message().getMessageid()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public String updateLastseen(int messageid) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String useridtoken = ((JwtAuthenticationToken) authentication).getUserid();
