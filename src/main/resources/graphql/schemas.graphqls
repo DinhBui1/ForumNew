@@ -14,6 +14,7 @@ type Query{
 
     #    Post
     post(limit: Int, pacing: Int):[PostDto],
+    post_for_user(userid: String, limit: Int, pacing: Int):[PostDto],
     find_post_by_id(postid: Int):PostDto,
     find_post_by_follow(userid: String):[PostDto],
     find_post_by_userid(userid: String):[PostDto],

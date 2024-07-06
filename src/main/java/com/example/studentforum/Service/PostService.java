@@ -60,6 +60,25 @@ public class PostService {
         return postDTOs;
     }
 
+    public List<PostDTO> getPostForUser(String userid, int size, int page) {
+        List<User> follows = followService.getallUserIdByFollower(userid);
+        List<Post> posts = new ArrayList<>();
+        for (User user : follows) {
+            List<Post> post = postRepository.getPostByUserid(user.getUserid());
+            posts.addAll(post);
+        }
+        int fromIndex = page * size;
+        int toIndex = Math.min(fromIndex + size, posts.size());
+        List<Post> paginatedPosts = posts.subList(fromIndex, toIndex);
+        List<PostDTO> postDTOs = new ArrayList<>();
+        for (Post post : paginatedPosts) {
+            PostDTO postDTO = this.setPostToPostDTO(post);
+            postDTOs.add(postDTO);
+        }
+
+        return postDTOs;
+    }
+
     public String updatePostById(Post post, List<Topic> topic) {
         Post p = postRepository.getPostById(post.getPostid());
         if (p.getUser_post().getIsban().getIsbanid() != 0) {

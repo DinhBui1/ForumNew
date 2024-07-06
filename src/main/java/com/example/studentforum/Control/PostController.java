@@ -23,6 +23,11 @@ public class PostController {
         return postService.getallPost(limit, pacing);
     }
 
+    @QueryMapping
+    public List<PostDTO> post_for_user(@Argument String userid, @Argument int limit, @Argument int pacing) {
+        return postService.getPostForUser(userid, limit, pacing);
+    }
+
     @MutationMapping
     public String update_post_by_pk(@Argument("post") Post post, @Argument("topic") List<Topic> topic) {
         return postService.updatePostById(post, topic);
