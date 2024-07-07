@@ -71,7 +71,16 @@ public class GroupService {
 
     public List<Group> findGroupbyKeyword(String keyword, String userid) {
         Jedis jedis = RedisManager.getConnection();
-        jedis.lpush(userid, keyword);
+        List<String> listValues = jedis.lrange(userid, 0, -1);
+        if (keyword != null && !keyword.isEmpty()) {
+            if (!listValues.contains(keyword)) {
+                jedis.lpush(userid, keyword);
+            } else {
+                jedis.lrem(userid, 0, keyword);
+                jedis.lpush(userid, keyword);
+            }
+        }
+        RedisManager.closeConnection();
         return groupRepository.getGroupByKeyword(keyword);
     }
 

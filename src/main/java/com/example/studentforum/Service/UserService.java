@@ -390,7 +390,16 @@ public class UserService {
 
     public List<User> getUserbayKeyword(String keyword, String userid) {
         Jedis jedis = RedisManager.getConnection();
-        jedis.lpush(userid, keyword);
+        List<String> listValues = jedis.lrange(userid, 0, -1);
+        if (keyword != null) {
+            if (!listValues.contains(keyword)) {
+                jedis.lpush(userid, keyword);
+            } else {
+                jedis.lrem(userid, 0, keyword);
+                jedis.lpush(userid, keyword);
+            }
+        }
+        RedisManager.closeConnection();
         return userRepository.getUserByKeyword(keyword);
     }
 }
