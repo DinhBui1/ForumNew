@@ -80,7 +80,6 @@ public class GroupService {
                 jedis.lpush(userid, keyword);
             }
         }
-        RedisManager.closeConnection();
         return groupRepository.getGroupByKeyword(keyword);
     }
 

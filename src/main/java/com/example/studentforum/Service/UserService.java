@@ -399,7 +399,6 @@ public class UserService {
                 jedis.lpush(userid, keyword);
             }
         }
-        RedisManager.closeConnection();
         return userRepository.getUserByKeyword(keyword);
     }
 }

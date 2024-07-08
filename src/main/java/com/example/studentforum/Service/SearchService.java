@@ -12,8 +12,7 @@ public class SearchService {
 
     public List<String> getInfoSearch(String userId) {
         Jedis jedis = RedisManager.getConnection();
-        List<String> listValues = jedis.lrange(userId, 0, -1);
-        RedisManager.closeConnection();
+        List<String> listValues = jedis.lrange(userId, 0, 5);
         return listValues;
     }
 
@@ -24,6 +23,5 @@ public class SearchService {
             jedis.lrem(userId, 0, keyword);
         }
         Collections.reverse(listValues);
-        RedisManager.closeConnection();
     }
 }

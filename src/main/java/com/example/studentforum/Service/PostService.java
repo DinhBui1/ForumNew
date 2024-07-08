@@ -227,7 +227,6 @@ public class PostService {
                 jedis.lpush(userid, keyword);
             }
         }
-        RedisManager.closeConnection();
         List<Post> posts = postRepository.getPostByKeyword(keyword);
         List<PostDTO> postDTOs = new ArrayList<>();
         for (Post post : posts) {
