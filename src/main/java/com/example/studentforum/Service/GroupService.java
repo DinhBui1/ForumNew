@@ -10,8 +10,9 @@ import com.example.studentforum.Repository.GroupRepository;
 import com.example.studentforum.Repository.UserRepository;
 import com.example.studentforum.Repository.User_GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,6 +20,9 @@ import java.util.List;
 
 @Service
 public class GroupService {
+    @Autowired
+    @Qualifier("redisTemplates")
+    private RedisTemplate<String, String> template;
     @Autowired
     private GroupRepository groupRepository;
     @Autowired
@@ -70,14 +74,13 @@ public class GroupService {
     }
 
     public List<Group> findGroupbyKeyword(String keyword, String userid) {
-        Jedis jedis = RedisManager.getConnection();
-        List<String> listValues = jedis.lrange(userid, 0, -1);
-        if (keyword != null && !keyword.isEmpty()) {
+        List<String> listValues = template.opsForList().range(userid, 0, -1);
+        if (keyword != null) {
             if (!listValues.contains(keyword)) {
-                jedis.lpush(userid, keyword);
+                template.opsForList().leftPush(userid, keyword);
             } else {
-                jedis.lrem(userid, 0, keyword);
-                jedis.lpush(userid, keyword);
+                template.opsForList().remove(userid, 0, keyword);
+                template.opsForList().leftPush(userid, keyword);
             }
         }
         return groupRepository.getGroupByKeyword(keyword);

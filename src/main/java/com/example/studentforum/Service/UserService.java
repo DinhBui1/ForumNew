@@ -15,16 +15,16 @@ import org.modelmapper.ModelMapper;
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.*;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import redis.clients.jedis.Jedis;
-
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -56,6 +56,9 @@ public class UserService {
     private NoticeService noticeService;
     @Autowired
     private IsBanRepository isBanRepository;
+    @Autowired
+    @Qualifier("redisTemplates")
+    private RedisTemplate<String, String> template;
     private ConcurrentHashMap<String, String> confirmationCodeMap = new ConcurrentHashMap<>();
     private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(16);
     private ScheduledExecutorService banService = Executors.newScheduledThreadPool(16);
@@ -389,14 +392,13 @@ public class UserService {
     }
 
     public List<User> getUserbayKeyword(String keyword, String userid) {
-        Jedis jedis = RedisManager.getConnection();
-        List<String> listValues = jedis.lrange(userid, 0, -1);
+        List<String> listValues = template.opsForList().range(userid, 0, -1);
         if (keyword != null) {
             if (!listValues.contains(keyword)) {
-                jedis.lpush(userid, keyword);
+                template.opsForList().leftPush(userid, keyword);
             } else {
-                jedis.lrem(userid, 0, keyword);
-                jedis.lpush(userid, keyword);
+                template.opsForList().remove(userid, 0, keyword);
+                template.opsForList().leftPush(userid, keyword);
             }
         }
         return userRepository.getUserByKeyword(keyword);

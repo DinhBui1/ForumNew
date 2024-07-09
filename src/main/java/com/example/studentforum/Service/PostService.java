@@ -1,22 +1,24 @@
 package com.example.studentforum.Service;
 
-import com.example.studentforum.Config.RedisManager;
 import com.example.studentforum.DTO.PostDTO;
 import com.example.studentforum.Model.*;
-import com.example.studentforum.Repository.*;
-import org.apache.tomcat.util.descriptor.tld.TldRuleSet;
+import com.example.studentforum.Repository.*;;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
 public class PostService {
+    @Autowired
+    @Qualifier("redisTemplates")
+    private RedisTemplate<String, String> template;
     @Autowired
     private PostRepository postRepository;
     @Autowired
@@ -217,14 +219,13 @@ public class PostService {
     }
 
     public List<PostDTO> findPostByKeyword(String keyword, String userid) {
-        Jedis jedis = RedisManager.getConnection();
-        List<String> listValues = jedis.lrange(userid, 0, -1);
-        if (keyword != null && !keyword.isEmpty()) {
+        List<String> listValues = template.opsForList().range(userid, 0, -1);
+        if (keyword != null) {
             if (!listValues.contains(keyword)) {
-                jedis.lpush(userid, keyword);
+                template.opsForList().leftPush(userid, keyword);
             } else {
-                jedis.lrem(userid, 0, keyword);
-                jedis.lpush(userid, keyword);
+                template.opsForList().remove(userid, 0, keyword);
+                template.opsForList().leftPush(userid, keyword);
             }
         }
         List<Post> posts = postRepository.getPostByKeyword(keyword);

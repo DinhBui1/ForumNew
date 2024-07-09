@@ -31,10 +31,10 @@ public class GroupController {
         return groupService.deleteGroup(groupid);
     }
 
-    @QueryMapping
-    public List<Group> find_group_by_keyword(@Argument String keyword, @Argument String userid) {
-        return groupService.findGroupbyKeyword(keyword, userid);
-    }
+//    @QueryMapping
+//    public List<Group> find_group_by_keyword(@Argument String keyword, @Argument String userid) {
+//        return groupService.findGroupbyKeyword(keyword, userid);
+//    }
 
     @QueryMapping
     public List<Group> get_group_by_admin(@Argument String admin) {
