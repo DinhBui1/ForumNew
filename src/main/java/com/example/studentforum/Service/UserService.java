@@ -1,13 +1,13 @@
 package com.example.studentforum.Service;
 
-import com.example.studentforum.Config.RedisManager;
+
 import com.example.studentforum.DTO.UserDTO;
 import com.example.studentforum.Model.*;
 import com.example.studentforum.Repository.IsBanRepository;
 import com.example.studentforum.Repository.RefreshTokenRepository;
 import com.example.studentforum.Repository.RoleRepository;
 import com.example.studentforum.Repository.UserRepository;
-import com.example.studentforum.exception.ErrorResponse;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;

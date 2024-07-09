@@ -37,12 +37,12 @@ public class UserController {
 
     @QueryMapping
     public List<User> account(@Argument int limit, @Argument int pacing) {
-//        List<GrantedAuthority> authorities =CheckRole.getRoleClient();
-//        List<GrantedAuthority> role = RoleAll.getRoleAll();
-//        if(CheckRole.checkRole(authorities,role)==1){
-        return userService.getallUser(limit, pacing);
-//        }
-//        throw new UnauthorizedException("UNAUTHORIZED");
+        List<GrantedAuthority> authorities = CheckRole.getRoleClient();
+        List<GrantedAuthority> role = RoleAll.getRoleAll();
+        if (CheckRole.checkRole(authorities, role) == 1) {
+            return userService.getallUser(limit, pacing);
+        }
+        throw new UnauthorizedException("UNAUTHORIZED");
     }
 
     @MutationMapping
@@ -73,7 +73,12 @@ public class UserController {
 
     @MutationMapping
     public User ban_user(@Argument("userid") String userid, @Argument("isbanid") int isbanid) {
-        return userService.checkBanUser(userid, isbanid);
+        List<GrantedAuthority> authorities = CheckRole.getRoleClient();
+        List<GrantedAuthority> role = RoleAll.getRoleAdmin();
+        if (CheckRole.checkRole(authorities, role) == 1) {
+            return userService.checkBanUser(userid, isbanid);
+        }
+        throw new UnauthorizedException("UNAUTHORIZED");
     }
 
     @QueryMapping

@@ -34,4 +34,9 @@ public class TopicController {
     public List<Topic> find_topic_by_topicname(@Argument String topicname) {
         return topicService.getTopicByName(topicname);
     }
+
+    @MutationMapping
+    public Topic update_topic(@Argument Topic topic) {
+        return topicService.updateTopic(topic);
+    }
 }

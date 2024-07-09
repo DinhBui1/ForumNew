@@ -66,6 +66,7 @@ type Query{
     get_group_by_admin(admin:String):[Group],
     get_group_by_userid(userid:String):[Group],
     get_group_by_groupid(groupid:Int):Group,
+    get_all_group(limit: Int, pacing: Int):[Group],
 
     #   User_Group
     get_user_in_group(groupid:Int,limit: Int, pacing: Int):[User_Group],
@@ -149,6 +150,7 @@ type Mutation {
     #    Topic
     create_topic(topicname:String):String,
     delete_topic(topicid:Int):String,
+    update_topic(topic: TopicRequest): Topic,
 
     #   Group
     create_group(group:GroupRequest,admin:String):GroupDTO,
@@ -287,7 +289,7 @@ type User{
     role:Role,
     reputation:Int,
     status:Int,
-    isbanid:IsBan,
+    isban:IsBan,
     mssv:String,
     color:String,
     totalfollowing:Int,
@@ -340,6 +342,8 @@ input TopicRequest{
     user_topicid:Int,
     ishide:Int,
     isdelete:Int,
+    image:String,
+    color:String,
 }
 type Group_Message{
     group_messageid: Int!,

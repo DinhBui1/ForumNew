@@ -44,4 +44,9 @@ public class TopicService {
         return topicRepository.getTopicByName(name);
     }
 
+    public Topic updateTopic(Topic topic) {
+        Topic t = topicRepository.getTopicById(topic.getTopicid());
+        t.setColor(topic.getColor());
+        return t;
+    }
 }

@@ -68,10 +68,10 @@ public class PostController {
         return postService.findPostbyTopicid(topicid);
     }
 
-//    @QueryMapping
-//    public List<PostDTO> find_post_by_keyword(@Argument String keyword, @Argument String userid) {
-//        return postService.findPostByKeyword(keyword, userid);
-//    }
+    @QueryMapping
+    public List<PostDTO> find_post_by_keyword(@Argument String keyword, @Argument String userid) {
+        return postService.findPostByKeyword(keyword, userid);
+    }
 
     @MutationMapping
     public String create_post_in_group(@Argument("post") Post post, @Argument("user") User user, @Argument("topic") List<Topic> topic, @Argument int groupid) {

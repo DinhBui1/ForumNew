@@ -11,6 +11,8 @@ import com.example.studentforum.Repository.UserRepository;
 import com.example.studentforum.Repository.User_GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -71,6 +73,12 @@ public class GroupService {
         }
         groupRepository.delete(g);
         return "Delete Group Success";
+    }
+
+    public List<Group> getAllGroup(int limit, int pacing) {
+        int offset = (pacing - 1);
+        Pageable pageable = PageRequest.of(offset, limit);
+        return groupRepository.getAllGroup(pageable);
     }
 
     public List<Group> findGroupbyKeyword(String keyword, String userid) {
