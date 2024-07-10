@@ -28,7 +28,7 @@ public class Post {
     @Column(name = "Createday")
     private LocalDateTime createday;
     @Column(name = "Updateday")
-    private Date updateday;
+    private LocalDateTime updateday;
     @Column(name = "Totalread")
     private int totalread;
     @Column(name = "Image", columnDefinition = "LONGTEXT")
@@ -129,11 +129,11 @@ public class Post {
         this.createday = createday;
     }
 
-    public Date getUpdateday() {
+    public LocalDateTime getUpdateday() {
         return updateday;
     }
 
-    public void setUpdateday(Date updateday) {
+    public void setUpdateday(LocalDateTime updateday) {
         this.updateday = updateday;
     }
 

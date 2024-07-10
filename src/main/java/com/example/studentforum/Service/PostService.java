@@ -117,7 +117,7 @@ public class PostService {
         p.setTitle(post.getTitle());
         p.setContent(post.getContent());
         p.setRequiredreputation(post.getRequiredreputation());
-        p.setUpdateday(new Date());
+        p.setUpdateday(LocalDateTime.now());
         postRepository.updatepost(p);
         return "Update Post Success";
     }

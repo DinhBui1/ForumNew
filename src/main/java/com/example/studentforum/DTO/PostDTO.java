@@ -24,7 +24,7 @@ public class PostDTO {
 
     private LocalDateTime createday;
 
-    private Date updateday;
+    private LocalDateTime updateday;
 
     private int totalread;
 
