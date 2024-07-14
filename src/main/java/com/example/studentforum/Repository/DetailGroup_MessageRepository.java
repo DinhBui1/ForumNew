@@ -20,4 +20,7 @@ public interface DetailGroup_MessageRepository extends JpaRepository<DetailGroup
     @Query("SELECT u FROM DetailGroup_Message u WHERE  u.detailgroupmessage_groupmessage.group_messageid = ?1")
     List<DetailGroup_Message> getDetailGroup_MessageByGroupmessageid(int groupmessageid);
 
+    @Query("SELECT u FROM DetailGroup_Message u WHERE  (u.detailgroup_messageid = ?1 ) ")
+    DetailGroup_Message getDetailGroup_MessageByid(int id);
+
 }

@@ -1,6 +1,7 @@
 package com.example.studentforum.Repository;
 
 import com.example.studentforum.Model.Content_GroupMessage;
+import com.example.studentforum.Model.Content_Message;
 import com.example.studentforum.Model.Group_Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,6 +25,9 @@ public interface Content_GroupMessageRepository extends JpaRepository<Content_Gr
 
     @Query("SELECT u FROM Content_GroupMessage u WHERE u.groupmessage_content.group_messageid = ?1 ")
     public List<Content_GroupMessage> findBygroupmessage(int groupmessageis);
+
+    @Query("select c from Content_GroupMessage c where c.groupmessage_content.group_messageid = ?1 order by c.createday desc limit 1")
+    Content_GroupMessage getContent_GroupMessageByMessage_content(int messageid);
 
     @Query("SELECT cgm FROM Content_GroupMessage cgm " +
             "WHERE cgm.groupmessage_content.group_messageid = :groupmessageId " +

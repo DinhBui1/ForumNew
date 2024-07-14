@@ -17,7 +17,7 @@ public class DetailGroup_MessageController {
     private DetailGroup_MessageService detailGroup_messageService;
 
     @MutationMapping
-    public String join_group_message(@Argument int groupmessageid, @Argument String userid, @Argument int level) {
+    public DetailGroup_Message join_group_message(@Argument int groupmessageid, @Argument String userid, @Argument int level) {
         return detailGroup_messageService.createDetailGroup_Message(groupmessageid, userid, level);
     }
 

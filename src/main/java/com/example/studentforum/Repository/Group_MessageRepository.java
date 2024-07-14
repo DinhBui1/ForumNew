@@ -27,7 +27,7 @@ public interface Group_MessageRepository extends JpaRepository<Group_Message, In
     void updateGroup_Message(@Param("groupMessage") Group_Message groupMessage);
 
     @Query("SELECT  gm FROM Group_Message gm " +
-            "INNER JOIN Content_GroupMessage c ON gm.group_messageid = c.groupmessage_content.group_messageid " +
+            "LEFT JOIN Content_GroupMessage c ON gm.group_messageid = c.groupmessage_content.group_messageid " +
             "INNER JOIN DetailGroup_Message d ON gm.group_messageid = d.detailgroupmessage_groupmessage.group_messageid " +
             "WHERE d.user_detailgroupmessage.userid = :userId " +
             "ORDER BY c.createday DESC")

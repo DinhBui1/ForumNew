@@ -1,6 +1,7 @@
 package com.example.studentforum.Service;
 
 import com.example.studentforum.Authetication.JwtAuthenticationToken;
+import com.example.studentforum.DTO.DetailGroupMessageDTO;
 import com.example.studentforum.Model.*;
 import com.example.studentforum.Repository.Content_GroupMessageRepository;
 import com.example.studentforum.Repository.DetailGroup_MessageRepository;
@@ -13,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -32,11 +34,11 @@ public class Group_MessageService {
     @Autowired
     private Content_GroupMessageRepository content_groupMessageRepository;
 
-    public String createGroup_Message(Group_Message group_message, String userid) {
+    public DetailGroup_Message createGroup_Message(Group_Message group_message, String userid) {
         try {
             User u = userRepository.getUserById(userid);
             if (u == null) {
-                return "User Not Found";
+                throw new RuntimeException("User Not Found");
             }
             Group_Message gm = new Group_Message();
             gm.setGroup_messagename(group_message.getGroup_messagename());
@@ -48,10 +50,10 @@ public class Group_MessageService {
             }
             group_messageRepository.save(gm);
 
-            detailGroup_messageService.createDetailGroup_Message(gm.getGroup_messageid(), userid, 1);
-            return "Create Group_Message Success";
+            DetailGroup_Message dgm = detailGroup_messageService.createDetailGroup_Message(gm.getGroup_messageid(), userid, 1);
+            return dgm;
         } catch (Exception e) {
-            return "Create Group_Message Fail";
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -111,14 +113,27 @@ public class Group_MessageService {
     public List<Group_Message> getGroup_MessagebyKeyword(String keyword) {
         return group_messageRepository.getGroup_MessageByKeyword(keyword);
     }
-
-    public Publisher<List<Group_Message>> getGroup_MessagebyUserid(String userid) {
+    
+    public Publisher<List<DetailGroupMessageDTO>> getGroup_MessagebyUserid(String userid) {
         try {
-//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//            String useridtoken = ((JwtAuthenticationToken) authentication).getUserid();
             return subscriber -> Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> {
                 List<Group_Message> gm = group_messageRepository.findGroupMessagesByUserIdOrderByLatestMessage(userid);
-                subscriber.onNext(gm);
+                List<DetailGroupMessageDTO> detailGroupMessageDTOS = new ArrayList<>();
+                for (Group_Message g : gm) {
+                    DetailGroup_Message dgm = detailGroup_messageRepository.getDetailGroup_MessageByMessageidandUserid(g.getGroup_messageid(), userid);
+                    DetailGroupMessageDTO d = new DetailGroupMessageDTO();
+                    d.setDetailgroupmessageid(dgm.getDetailgroup_messageid());
+                    d.setUserid(dgm.getUser_detailgroupmessage());
+                    d.setIshide(dgm.getIshide());
+                    d.setLastseen(dgm.getLastseen());
+                    d.setGroupmessage(g);
+                    Content_GroupMessage cgm = content_groupMessageRepository.getContent_GroupMessageByMessage_content(g.getGroup_messageid());
+                    if (cgm != null) {
+                        d.setLastsend(cgm.getCreateday());
+                    }
+                    detailGroupMessageDTOS.add(d);
+                }
+                subscriber.onNext(detailGroupMessageDTOS);
 
             }, 0, 1, TimeUnit.SECONDS);
         } catch (Exception e) {

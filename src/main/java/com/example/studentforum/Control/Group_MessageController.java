@@ -1,5 +1,7 @@
 package com.example.studentforum.Control;
 
+import com.example.studentforum.DTO.DetailGroupMessageDTO;
+import com.example.studentforum.Model.DetailGroup_Message;
 import com.example.studentforum.Model.Group_Message;
 import com.example.studentforum.Service.Group_MessageService;
 import org.reactivestreams.Publisher;
@@ -18,8 +20,12 @@ public class Group_MessageController {
     private Group_MessageService group_messageService;
 
     @MutationMapping
-    public String create_group_message(@Argument Group_Message group_message, @Argument String userid) {
-        return group_messageService.createGroup_Message(group_message, userid);
+    public DetailGroup_Message create_group_message(@Argument Group_Message group_message, @Argument String userid) {
+        try {
+            return group_messageService.createGroup_Message(group_message, userid);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @MutationMapping
@@ -38,7 +44,7 @@ public class Group_MessageController {
     }
 
     @SubscriptionMapping
-    public Publisher<List<Group_Message>> sub_group_message_by_userid(@Argument String userid) {
+    public Publisher<List<DetailGroupMessageDTO>> sub_group_message_by_userid(@Argument String userid) {
         return group_messageService.getGroup_MessagebyUserid(userid);
     }
 }

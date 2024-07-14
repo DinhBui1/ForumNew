@@ -32,4 +32,7 @@ public class DetailGroup_Message {
 
     @Column(name = "Lastseen")
     private LocalDateTime lastseen;
+
+    @Column(name = "Ishide")
+    private Integer ishide;
 }

@@ -24,19 +24,19 @@ public class DetailGroup_MessageService {
     @Autowired
     private UserRepository userRepository;
 
-    public String createDetailGroup_Message(int group_messageid, String userid, int level) {
+    public DetailGroup_Message createDetailGroup_Message(int group_messageid, String userid, int level) {
         try {
             Group_Message gm = group_messageRepository.getGroup_MessageById(group_messageid);
             if (gm == null) {
-                return "Group_Message Not Found";
+                throw new RuntimeException("Group_Message Not Found");
             }
             User u = userRepository.getUserById(userid);
             if (u == null) {
-                return "User Not Found";
+                throw new RuntimeException("User Not Found");
             }
             DetailGroup_Message dgm1 = detailGroup_MessageRepository.getDetailGroup_MessageByMessageidandUserid(group_messageid, userid);
             if (dgm1 != null) {
-                return "DetailGroup_Message Already Exist";
+                throw new RuntimeException("DetailGroup_Message Already Exists");
             }
             DetailGroup_Message dgm = new DetailGroup_Message();
             dgm.setDetailgroupmessage_groupmessage(gm);
@@ -45,9 +45,9 @@ public class DetailGroup_MessageService {
             dgm.setLastseen(LocalDateTime.now());
             dgm.setCreateday(LocalDateTime.now());
             detailGroup_MessageRepository.save(dgm);
-            return "Create DetailGroup_Message Success";
+            return dgm;
         } catch (Exception e) {
-            return "Create DetailGroup_Message Fail";
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -94,11 +94,9 @@ public class DetailGroup_MessageService {
         }
     }
 
-    public String updateLastseenGroup(int groupmessageid) {
+    public String updateLastseenGroup(int dtgroupmessageid) {
         try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String useridtoken = ((JwtAuthenticationToken) authentication).getUserid();
-            DetailGroup_Message dgm = detailGroup_MessageRepository.getDetailGroup_MessageByMessageidandUserid(groupmessageid, useridtoken);
+            DetailGroup_Message dgm = detailGroup_MessageRepository.getDetailGroup_MessageByid(dtgroupmessageid);
             if (dgm == null) {
                 return "DetailGroup_Message Not Found";
             }

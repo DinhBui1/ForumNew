@@ -1,5 +1,7 @@
 package com.example.studentforum.DTO;
 
+import com.example.studentforum.Model.Group_Message;
+import com.example.studentforum.Model.User;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -7,14 +9,16 @@ import java.time.LocalDateTime;
 @Data
 public class DetailGroupMessageDTO {
 
-    private int group_messageid;
+    private int detailgroupmessageid;
 
-    private String group_messagename;
+    private Group_Message groupmessage;
 
-    private String group_messageimage;
+    private User userid;
 
-    private String group_messagedescription;
+    private Integer ishide;
 
-    private LocalDateTime createdate;
+    private LocalDateTime lastseen;
+
+    private LocalDateTime lastsend;
 
 }

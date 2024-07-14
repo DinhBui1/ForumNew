@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -144,10 +146,10 @@ public class PostService {
         }
     }
 
-    public String createPost(Post post, User user, List<Topic> topic) {
+    public PostDTO createPost(Post post, User user, List<Topic> topic) {
         User u = userRepository.getUserById(user.getUserid());
         if (u.getIsban().getIsbanid() != 0) {
-            return "User has been exit ban list";
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bạn đang bị cấm");
         }
         post.setUser_post(u);
         post.setIshide(0);
@@ -170,6 +172,7 @@ public class PostService {
             }
         }
         Post savedPost = postRepository.save(post);
+        PostDTO postDTO = this.setPostToPostDTO(post);
 
         if (topic != null) {
             for (Topic topic1 : topic) {
@@ -183,7 +186,7 @@ public class PostService {
             Notice n = noticeService.createNotice(us.getUserid(), content, 6, 0);
         }
         userService.updateReputation(u.getUserid(), 20);
-        return "Create Post Success";
+        return postDTO;
     }
 
     public String hidePostById(int id) {
@@ -247,11 +250,11 @@ public class PostService {
         return postDTOs;
     }
 
-    public String createPostinGroup(Post post, User user, List<Topic> topic, int groupid) {
+    public PostDTO createPostinGroup(Post post, User user, List<Topic> topic, int groupid) {
         User u = userRepository.getUserById(user.getUserid());
         Group g = groupRepository.getGroupByGroupId(groupid);
         if (u.getIsban().getIsbanid() != 0) {
-            return "User has been exit ban list";
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bạn đang bị cấm");
         }
         String checkPostTitle = genminiService.callApi(post.getTitle());
         if (checkPostTitle.contains("yes")) {
@@ -275,7 +278,7 @@ public class PostService {
         post.setGroup_post(g);
         post.setTotalread(0);
         Post savedPost = postRepository.save(post);
-
+        PostDTO postDTO = this.setPostToPostDTO(post);
         if (topic != null) {
             for (Topic topic1 : topic) {
                 postTopicService.createPost_Topic(savedPost.getPostid(), topic1.getTopicid());
@@ -283,7 +286,7 @@ public class PostService {
         }
 
         userService.updateReputation(u.getUserid(), 20);
-        return "Create Post Success";
+        return postDTO;
     }
 
     public List<PostDTO> getPostinGroup(int groupid) {

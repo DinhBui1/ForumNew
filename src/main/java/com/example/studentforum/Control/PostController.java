@@ -39,7 +39,7 @@ public class PostController {
     }
 
     @MutationMapping
-    public String create_post(@Argument("post") Post post, @Argument("user") User user, @Argument("topic") List<Topic> topic) {
+    public PostDTO create_post(@Argument("post") Post post, @Argument("user") User user, @Argument("topic") List<Topic> topic) {
         return postService.createPost(post, user, topic);
     }
 
@@ -74,7 +74,7 @@ public class PostController {
     }
 
     @MutationMapping
-    public String create_post_in_group(@Argument("post") Post post, @Argument("user") User user, @Argument("topic") List<Topic> topic, @Argument int groupid) {
+    public PostDTO create_post_in_group(@Argument("post") Post post, @Argument("user") User user, @Argument("topic") List<Topic> topic, @Argument int groupid) {
         return postService.createPostinGroup(post, user, topic, groupid);
     }
 

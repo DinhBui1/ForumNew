@@ -60,6 +60,7 @@ type Query{
 
     #    Report
     get_report_by_type(type:Int):[Report],
+    get_report_by_id(id:Int):Report,
 
     #   Group
     find_group_by_keyword(keyword:String, userid:String):[Group],
@@ -106,10 +107,10 @@ type Mutation {
     #    Post
     update_post_by_pk (post:PostRequest,topic:[TopicRequest]):String,
     delete_post_by_pk (postid:Int):String,
-    create_post(post:PostRequest,user:UserRequest,topic:[TopicRequest]):String,
+    create_post(post:PostRequest,user:UserRequest,topic:[TopicRequest]):PostDto,
     hide_post(postid: Int):String,
     update_totalread_post(postid: Int,userid: String):String,
-    create_post_in_group(post:PostRequest,user:UserRequest,topic:[TopicRequest],groupid:Int):String,
+    create_post_in_group(post:PostRequest,user:UserRequest,topic:[TopicRequest],groupid:Int):PostDto,
 
     #    Comment
     update_comment_by_pk(comment: CommentRequest):String,
@@ -176,12 +177,12 @@ type Mutation {
     add_icon_to_content_message( contentid: Int, iconid: Int):String,
 
     #   Group_Message
-    create_group_message(group_message: Group_MessageRequest, userid:String):String,
+    create_group_message(group_message: Group_MessageRequest, userid:String):DetailGroup_Message,
     update_group_message(group_message: Group_MessageRequest):String,
     delete_group_message(group_messageid: Int):String,
 
     #   DetailGroup_Message
-    join_group_message(groupmessageid: Int, userid:String, level: Int):String,
+    join_group_message(groupmessageid: Int, userid:String, level: Int):DetailGroup_Message,
     update_level_detailgroup_message(groupmessageid: Int, userid:String, level: Int):String,
     leave_group_message(groupmessageid: Int, userid:String):String,
     update_lastseen_group(groupmessageid: Int):String,
@@ -198,10 +199,18 @@ type Mutation {
 type Subscription{
     sub_all_notice_by_userid(userid: String):[Notice],
     sub_status_user(userid:String):User,
-    sub_group_message_by_userid(userid:String):[Group_Message],
+    sub_group_message_by_userid(userid:String):[DetailGroupMessageDTO],
     sub_contentgroup_message_by_userid(groupmessageId: Int, userid:String):[ContentMessageDTO],
     sub_content_message_by_messageid(messageid:Int, userid:String):[ContentMessageDTO],
     sub_detail_message_by_userid(userid:String):[DetailMessageDTO],
+}
+type DetailGroupMessageDTO {
+    detailgroupmessageid:Int,
+    groupmessage: Group_Message,
+    userid: User,
+    ishide: Int,
+    lastseen: LocalDateTime,
+    lastsend: LocalDateTime,
 }
 type Bookmark {
     bookmarkid : Int!,
@@ -351,6 +360,7 @@ type Group_Message{
     group_messageimage:String,
     createday: LocalDateTime,
     group_messagedescription:String,
+    parent: Int,
 }
 input Group_MessageRequest{
     group_messageid: Int,
@@ -364,7 +374,7 @@ type DetailGroup_Message{
     detailgroupmessage_groupmessage: Group_Message,
     user_detailgroupmessage: User,
     level: Int,
-    createday: LocalDateTime
+    createday: LocalDateTime,
 }
 type Content_GroupMessage{
     content_groupmessageid: Int!,
