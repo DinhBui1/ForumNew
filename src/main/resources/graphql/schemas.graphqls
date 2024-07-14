@@ -368,6 +368,7 @@ input Group_MessageRequest{
     group_messageimage:String,
     createday: LocalDateTime,
     group_messagedescription:String,
+    parent: Int,
 }
 type DetailGroup_Message{
     detailgroup_messageid: Int!,
