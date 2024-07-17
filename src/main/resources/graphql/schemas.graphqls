@@ -200,7 +200,7 @@ type Subscription{
     sub_all_notice_by_userid(userid: String):[Notice],
     sub_status_user(userid:String):User,
     sub_group_message_by_userid(userid:String):[DetailGroupMessageDTO],
-    sub_contentgroup_message_by_userid(groupmessageId: Int, userid:String):[ContentMessageDTO],
+    sub_contentgroup_message_by_userid(groupmessageId: Int, userId:String):[ContentMessageDTO],
     sub_content_message_by_messageid(messageid:Int, userid:String):[ContentMessageDTO],
     sub_detail_message_by_userid(userid:String):[DetailMessageDTO],
 }

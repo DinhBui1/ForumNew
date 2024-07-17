@@ -127,8 +127,6 @@ public class Content_GroupMessageService {
 
     public Publisher<List<ContentMessageDTO>> getContent_GroupMessagebyGroupmessageidandUseridNotoken(int groupmessageId, String userId) throws SubscriptionException {
         try {
-//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//            String useridtoken = ((JwtAuthenticationToken) authentication).getUserid();
             DetailGroup_Message detailGroup_message = detailGroup_messageRepository.getDetailGroup_MessageByMessageidandUserid(groupmessageId, userId);
             if (detailGroup_message == null) {
                 throw new RuntimeException("You are not in this group message");

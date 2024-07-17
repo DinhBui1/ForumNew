@@ -30,7 +30,7 @@ public interface Content_GroupMessageRepository extends JpaRepository<Content_Gr
     Content_GroupMessage getContent_GroupMessageByMessage_content(int messageid);
 
     @Query("SELECT cgm FROM Content_GroupMessage cgm " +
-            "WHERE cgm.groupmessage_content.group_messageid = :groupmessageId " +
+            "WHERE cgm.groupmessage_content.group_messageid = ?1 " +
             "ORDER BY cgm.createday DESC LIMIT 50")
-    List<Content_GroupMessage> findGroupMessagesByUserIdOrderByLatestMessage(@Param("groupmessageId") int groupmessageid);
+    List<Content_GroupMessage> findGroupMessagesByUserIdOrderByLatestMessage(int groupmessageid);
 }
